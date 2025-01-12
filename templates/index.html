@@ -16,6 +16,8 @@
     <meta name='og:description' content='Northwood High School Anime Club'>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=stat_minus_3" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>Northwood High School Anime Club</title>
 </head>
 <style>
@@ -25,14 +27,14 @@
         font-weight: bold;
         font-style: normal;
     }
-    
+
     @font-face {
         font-family: 'TightSpot BB';
         src: url('./media/TightSpotBB-BoldItalic.woff') format('woff');
         font-weight: bold;
         font-style: italic;
     }
-    
+
     body {
         margin: 0;
         height: 100vh;
@@ -112,7 +114,8 @@
         </div>
         <div class="flex flex-col items-center justify-center bg-cover bg-center text-white">
             <div class="w-11/12 max-w-md text-center">
-                <p class="odinbold text-white text-3xl md:text-5xl mt-10 md:mt-0" style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
+                <p class="odinbold text-white text-3xl md:text-5xl mt-10 md:mt-0"
+                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
                     A club at NHS for fans of Anime (Animations that are created in Japan) and Manga (Comics that are
                     created in Japan)
                 </p>
@@ -123,7 +126,8 @@
         class="h-screen md:grid grid-cols-2 justify-center justify-items-center items-center place-items-center mt-20 md:mt-0 md:mx-5">
         <div class="flex flex-col items-center justify-center bg-cover bg-center text-white">
             <div class="w-11/12 max-w-md text-center mx-auto">
-                <p class="odinbold text-white text-3xl md:text-5xl" style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
+                <p class="odinbold text-white text-3xl md:text-5xl"
+                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
                     Where: Ms. Tyo's Room (1207)<br>
                     When: Every 1st and 3rd Tuesday of the Month
                 </p>
@@ -152,8 +156,10 @@
         </div>
         <div class="flex flex-col items-center justify-center bg-cover bg-center text-white">
             <div class="w-11/12 max-w-md text-center mx-auto">
-                <p class="odinbold text-white text-3xl md:text-5xl mt-10 md:mt-0" style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    We host fun events, games, and watch-parties! Anime Club is also a great place to make new like-minded friends!
+                <p class="odinbold text-white text-3xl md:text-5xl mt-10 md:mt-0"
+                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
+                    We host fun events, games, and watch-parties! Anime Club is also a great place to make new
+                    like-minded friends!
                 </p>
             </div>
         </div>
@@ -177,5 +183,15 @@
 
 
 </body>
+<script>
+    $(window).scroll(function(){
+        var topscroll = $(this).scrollTop();
+        var screenheight = $(window).height();
+        var calculate_opacity = 1 - (topscroll/screenheight) > 0.7 ? 1 - (topscroll/screenheight) : 0.7;
+
+        $(".background").css("top", -topscroll/50);
+        $(".background").css("opacity", calculate_opacity);
+    });
+</script>
 
 </html>
