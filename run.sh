@@ -1,1 +1,1 @@
-gunicorn -w 4 'main:app' -b 127.0.0.1:5025:
+gunicorn -w 4 'main:app' -b 127.0.0.1:5025
