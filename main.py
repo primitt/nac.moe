@@ -1,6 +1,11 @@
 from flask import Flask, render_template, send_from_directory
 from datetime import datetime, timedelta
 
+# TODO: Create admin panel
+# TODO: Create a monthly manga recommendations page
+# TODO: Create an events page
+# TODO: Create a meet the board page
+# TODO: Add contact information and proper, nice footer
 
 
 skip_meeting = ["2025-01-21"]
