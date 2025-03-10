@@ -46,7 +46,7 @@ def media(path):
     return send_from_directory('media', path)
 @app.route('/short/<name>')
 def short(name):
-    json_file = open('short.json').json()
+    json_file = json.load(open('short.json'))
     if name.lower() in json_file:
         return redirect(json_file[name.lower()]['url'])
     return "Short link not found", 404
