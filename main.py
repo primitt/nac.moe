@@ -1,5 +1,6 @@
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory, redirect
 from datetime import datetime, timedelta
+import json
 
 # TODO: Create admin panel
 # TODO: Create a monthly manga recommendations page
@@ -43,5 +44,11 @@ def index():
 @app.route('/media/<path>')
 def media(path):
     return send_from_directory('media', path)
+@app.route('/short/<name>')
+def short(name):
+    json_file = open('short.json').json()
+    if name.lower() in json_file:
+        return redirect(json_file[name.lower()]['url'])
+    return "Short link not found", 404
 if __name__ == '__main__':
     app.run(debug=True)
