@@ -46,9 +46,21 @@ async def create_event(
         parsed_date_end = datetime.datetime.strptime(date_end, "%m/%d/%Y")
     else:
         parsed_date_end = None
+
+    # Check if event already exists
+    existing_event = events.select().where(
+        (events.name == name) & (events.date == parsed_date)
+    ).first()
+
+    if existing_event:
+        await interaction.response.send_message(f"Event `{name}` on `{date}` already exists!", ephemeral=True)
+        return
+
+    # Create the event
     event = events.create(
         type=event_type, name=name, date=parsed_date, date_end=parsed_date_end, time=time, location=location, url=url)
     await interaction.response.send_message(f"Event `{event.name}` with id `{event.id}` created!")
+
 
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def all_events(interaction: nextcord.Interaction):
@@ -64,9 +76,13 @@ async def delete_event(
     interaction: nextcord.Interaction,
     event_id: int = nextcord.SlashOption(name="id", description="ID of the event", required=True)
 ):
-    event = events.get(events.id == event_id)
-    event.delete_instance()
-    await interaction.response.send_message(f"Event `{event.name}` with id `{event.id}` deleted!")
+    try:
+        event = events.get(events.id == event_id)
+        event.delete_instance()
+        await interaction.response.send_message(f"Event `{event.name}` with id `{event.id}` deleted!")
+    except events.DoesNotExist:
+        await interaction.response.send_message(f"Error: No event found with ID `{event_id}`.", ephemeral=True)
+
 
 
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))
