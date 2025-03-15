@@ -56,12 +56,18 @@ def event():
     even = events.select()
     parsed_events = {}
     for event in even:
-        if event.date:
+        if event.date and event.date_end:
             if event.date >= datetime.now().date() or event.date_end >= datetime.now().date():
                 get_month = event.date.strftime('%B')
                 event.date = event.date.strftime('%B %d, %Y')
-                if event.date_end:
-                    event.date_end = event.date_end.strftime('%B %d, %Y')
+                event.date_end = event.date_end.strftime('%B %d, %Y')
+                if get_month not in parsed_events:
+                    parsed_events[get_month] = []
+                parsed_events[get_month].append(event)
+        elif event.date:
+             if event.date >= datetime.now().date():
+                get_month = event.date.strftime('%B')
+                event.date = event.date.strftime('%B %d, %Y')
                 if get_month not in parsed_events:
                     parsed_events[get_month] = []
                 parsed_events[get_month].append(event)
