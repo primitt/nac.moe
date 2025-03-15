@@ -16,7 +16,7 @@ bot = commands.Bot(command_prefix=["Mi!", "mi!"],
 @bot.event
 async def on_ready():
     # add a status to the bot
-    await bot.change_presence(activity=nextcord.Game(name="Blue Archive"))
+    await bot.change_presence(activity=nextcord.Game(name="Northwood High School Anime Club"))
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
 
