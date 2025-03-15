@@ -39,7 +39,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def index():
-    meeting_date = events.select().where(events.type == 'Meeting' and events.date > datetime.now().date()).order_by(events.date.asc()).limit(1)
+    meeting_date = events.select().where(events.type == 'Meeting', events.date > datetime.now().date()).order_by(events.date.asc()).limit(1)
     if len(meeting_date) > 0:
         meeting_date = meeting_date[0].date.strftime('%B %d, %Y')
     else:
