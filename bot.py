@@ -40,16 +40,12 @@ async def create_event(
 ):
     if date:
         parsed_date = datetime.datetime.strptime(date, "%Y-%m-%d")
-    if date_end:
-        parsed_date_end = datetime.datetime.strptime(date_end, "%Y-%m-%d")
-    if date == date_end:
-        await interaction.response.send_message("The start and end date cannot be the same!")
-        return
-    if parsed_date < datetime.datetime.now():
-        await interaction.response.send_message("The date cannot be in the past!")
-        return
     else:
         parsed_date = None
+    if date_end:
+        parsed_date_end = datetime.datetime.strptime(date_end, "%Y-%m-%d")
+    else:
+        parsed_date_end = None
     event = events.create(
         type=event_type, name=name, date=parsed_date, date_end=parsed_date_end, time=time, location=location, url=url)
     await interaction.response.send_message(f"Event `{event.name}` with id `{event.id}` created!")
