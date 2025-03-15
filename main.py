@@ -57,7 +57,7 @@ def event():
     parsed_events = {}
     for event in even:
         if event.date:
-            if event.date >= datetime.now().date():
+            if event.date >= datetime.now().date() or event.date_end >= datetime.now().date():
                 get_month = event.date.strftime('%B')
                 event.date = event.date.strftime('%B %d, %Y')
                 if event.date_end:
