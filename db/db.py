@@ -22,7 +22,7 @@ class events(BaseModel):
 
     class Meta:
         table_name = 'events'
-        
+
     
 if not database.table_exists('events'):
     database.create_tables([events])
