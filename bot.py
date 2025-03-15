@@ -28,22 +28,22 @@ async def create_event(
     name: str = nextcord.SlashOption(
         name="name", description="Name of the event", required=True),
     date: Optional[str] = nextcord.SlashOption(
-        name="date", description="Date of the event (YYYY-MM-DD) ex. 2025-03-02", required=False),
+        name="date", description="Date of the event (DD/MM/YYYY) ex. 03/03/2025", required=False),
     date_end: Optional[str] = nextcord.SlashOption(
-        name="date_end", description="End date of the event (YYYY-MM-DD) ex. 2025-03-03", required=False),
+        name="date_end", description="End date of the event (DD/MM/YYYY) ex. 03/03/2025", required=False),
     time: Optional[str] = nextcord.SlashOption(
-        name="time", description="Time of the event (HH:MM)", required=False),
+        name="time", description="Range of time of the event (No format) Ex. Lunch, All Day, 7 PM - 12 AM", required=False),
     location: Optional[str] = nextcord.SlashOption(
         name="location", description="Location of the event", required=False),
     url: Optional[str] = nextcord.SlashOption(
         name="url", description="URL of the event", required=False)
 ):
     if date:
-        parsed_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+        parsed_date = datetime.datetime.strptime(date, "%d/%m/%Y")
     else:
         parsed_date = None
     if date_end:
-        parsed_date_end = datetime.datetime.strptime(date_end, "%Y-%m-%d")
+        parsed_date_end = datetime.datetime.strptime(date_end, "%d/%m/%Y")
     else:
         parsed_date_end = None
     event = events.create(
