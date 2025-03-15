@@ -1,4 +1,4 @@
-<html data-theme="black">
+<html data-theme="light">
 
 <head>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -35,11 +35,33 @@
         font-style: italic;
     }
 
-    body {
-        margin: 0;
-        height: 100vh;
+    @font-face {
+        font-family: 'Odin Rounded';
+        src: url('./media/odin-rounded.regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
     }
 
+    @font-face {
+        font-family: 'Odin Rounded';
+        src: url('./media/odin-rounded.light.woff') format('woff');
+        font-weight: lighter;
+        font-style: normal;
+    }
+
+    /* Black background layer */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        z-index: -2;
+    }
+
+    /* Background image overlay */
     .background {
         position: fixed;
         top: 0;
@@ -50,16 +72,6 @@
         background-size: cover;
         filter: blur(5px);
         z-index: -1;
-    }
-    .background::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 13vh; /* Adjust height of transparent area */
-        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
-        z-index: 0; /* Ensures it blends smoothly */
     }
 
     .odinbold {
@@ -74,20 +86,22 @@
         font-style: italic;
     }
 
+    .odinregular {
+        font-family: 'Odin Rounded';
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .odinlight {
+        font-family: 'Odin Rounded';
+        font-weight: lighter;
+        font-style: normal;
+    }
+
     .animetext {
         -webkit-text-stroke: 1px #000000;
     }
 </style>
-<header>
-    <div class="navbar">
-        <div class="flex-1"></div>
-        <div class="flex-none gap-4 px-5 odinbold text-bold text-xl">
-          <a href="/events">
-            Events
-          </a>
-        </div>
-      </div>
-</header>
 
 <body>
     <div class="background"></div>
@@ -109,11 +123,15 @@
                     next meeting will be on</span>
                 <span class="odinbold text-3xl text-[#000080]"
                     style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">{{next_tuesday}}</span>
+                <div class="flex justify-center mt-7 odinregular">
+                    <a href="/events"
+                        class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl">Events</a>
+                </div>
             </div>
         </div>
         <footer class="text-center text-white odinbold text-2xl mb-5"
             style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-            <span class="mb-5">Scroll Down</span>
+            <span class="mb-5">Scroll Down For More Info</span>
             <br>
             <span class="material-symbols-outlined text-xl">
                 stat_minus_3
