@@ -64,7 +64,6 @@ def event():
                     event.date_end = event.date_end.strftime('%B %d, %Y')
                 if get_month not in parsed_events:
                     parsed_events[get_month] = []
-                print(event.date)
                 parsed_events[get_month].append(event)
         else:
             if 'No Date' not in parsed_events:
