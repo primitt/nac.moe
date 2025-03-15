@@ -67,4 +67,6 @@ async def delete_event(
     event = events.get(events.id == event_id)
     event.delete_instance()
     await interaction.response.send_message(f"Event `{event.name}` with id `{event.id}` deleted!")
+
+
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))

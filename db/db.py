@@ -1,4 +1,5 @@
 from peewee import *
+from playhouse.migrate import *
 
 database = SqliteDatabase('db/nac.sql')
 
@@ -22,5 +23,13 @@ class events(BaseModel):
     class Meta:
         table_name = 'events'
         
+    
 if not database.table_exists('events'):
     database.create_tables([events])
+
+    
+
+if __name__ == "__main__":
+    # migration
+    migrator = SqliteMigrator(database)
+    
