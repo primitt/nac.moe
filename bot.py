@@ -47,10 +47,11 @@ async def create_event(
         return
     if parsed_date < datetime.datetime.now():
         await interaction.response.send_message("The date cannot be in the past!")
+        return
     else:
         parsed_date = None
     event = events.create(
-        type=event_type, name=name, date=parsed_date, time=time, location=location, url=url)
+        type=event_type, name=name, date=parsed_date, date_end=parsed_date_end, time=time, location=location, url=url)
     await interaction.response.send_message(f"Event `{event.name}` with id `{event.id}` created!")
 
 @bot.slash_command(guild_ids=[1342913889544962090])
