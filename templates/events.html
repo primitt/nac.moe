@@ -117,6 +117,10 @@
                 <!-- back to home button -->
                 <div class="odinlight">Listed here are events such as <b class="odinbold">meeting information</b>, <b
                         class="odinbold">local events</b> and <b class="odinbold">large conventions in SoCal</b>.</div>
+                <div class="odinlight mb-7">
+                    <div class="badge badge-success">NAC</div> - Northwood Anime Club Meeting/Event <br>
+                    <div class="badge badge-neutral">External Event</div> - Local Event/Convention <b class="odinbold">not affiliated with NAC</b>
+                </div>
                 <div class="card-text">
                     {% if parsed_events|length  == 0 %}
                     <div class="text-center">
@@ -128,8 +132,17 @@
                     <div class="divider mt-0 mb-2"></div>
                     <div class="lg:flex gap-4">
                         {% for event in parsed_events[month] %}
-                        <div class="card bg-base-200 w-auto mb-4 lg:mb-0">
+                        <div class="card bg-base-200 w-auto mb-4 lg:mb-0 lg:max-w-[350px]">
                             <div class="card-body">
+                                {% if event.type == "Meeting" %}
+                                    <div class="badge badge-success">NAC</div>
+                                {% endif %}
+                                {% if event.type == "Convention" or event.type == "Local Event" %}
+                                    <div class="badge badge-neutral">External Event</div>
+                                {% endif %}
+                                {% if event.type == "Movie" %}
+                                    <div class="badge badge-primary">Standalone</div>
+                                {% endif %}
                                 <p class="odinbold">{{event.type}}</p>
                                 <p class="text-2xl odinbold">{{event.name}}</p>
                                 {% if event.url %}
