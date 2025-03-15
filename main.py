@@ -57,11 +57,15 @@ def event():
     parsed_events = {}
     for event in even:
         if event.date:
-            get_month = event.date.strftime('%B')
-            # add event to the parsed_events[month] list
-            if get_month not in parsed_events:
-                parsed_events[get_month] = []
-            parsed_events[get_month].append(event)
+            if event.date >= datetime.now().date():
+                get_month = event.date.strftime('%B')
+                event.date = event.date.strftime('%B %d, %Y')
+                if event.date_end:
+                    event.date_end = event.date_end.strftime('%B %d, %Y')
+                if get_month not in parsed_events:
+                    parsed_events[get_month] = []
+                print(event.date)
+                parsed_events[get_month].append(event)
         else:
             if 'No Date' not in parsed_events:
                 parsed_events['No Date'] = []

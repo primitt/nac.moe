@@ -29,6 +29,8 @@ async def create_event(
         name="name", description="Name of the event", required=True),
     date: Optional[str] = nextcord.SlashOption(
         name="date", description="Date of the event (YYYY-MM-DD) ex. 2025-03-02", required=False),
+    date_end: Optional[str] = nextcord.SlashOption(
+        name="date_end", description="End date of the event (YYYY-MM-DD) ex. 2025-03-03", required=False),
     time: Optional[str] = nextcord.SlashOption(
         name="time", description="Time of the event (HH:MM)", required=False),
     location: Optional[str] = nextcord.SlashOption(
@@ -38,6 +40,13 @@ async def create_event(
 ):
     if date:
         parsed_date = datetime.datetime.strptime(date, "%Y-%m-%d")
+    if date_end:
+        parsed_date_end = datetime.datetime.strptime(date_end, "%Y-%m-%d")
+    if date == date_end:
+        await interaction.response.send_message("The start and end date cannot be the same!")
+        return
+    if parsed_date < datetime.datetime.now():
+        await interaction.response.send_message("The date cannot be in the past!")
     else:
         parsed_date = None
     event = events.create(
@@ -48,9 +57,9 @@ async def create_event(
 async def all_events(interaction: nextcord.Interaction):
     all_events = events.select()
     event_list = []
-    event_list.append("Events (Name, Type, Date, Time, Location, URL):")
+    event_list.append("Events (Name, Type, Date, Ending Date, Time, Location, URL):")
     for event in all_events:
-        event_list.append(f"(ID) {event.id}. {event.name} - {event.type} - {event.date} - {event.time} - {event.location} - {event.url}")
+        event_list.append(f"(ID) {event.id}. {event.name} - {event.type} - {event.date} - {event.date_end} - {event.time} - {event.location} - {event.url}")
     await interaction.response.send_message("\n".join(event_list))  
 
 @bot.slash_command(guild_ids=[1342913889544962090])

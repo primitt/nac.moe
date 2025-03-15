@@ -14,6 +14,7 @@ class events(BaseModel):
     type = TextField()
     name = TextField()
     date = DateField(null = True)
+    date_end = DateField(null = True)
     time = TextField(null = True)
     location = TextField(null = True)
     url = TextField(null = True)
