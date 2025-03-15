@@ -1,8 +1,9 @@
 from flask import Flask, render_template, send_from_directory, redirect
 from datetime import datetime, timedelta
 import json
+from db.db import database, events
 
-# TODO: Create admin panel
+# TODO: Create admin bot
 # TODO: Create a monthly manga recommendations page
 # TODO: Create an events page
 # TODO: Create a meet the board page
@@ -50,5 +51,23 @@ def short(name):
     if name.lower() in json_file:
         return redirect(json_file[name.lower()]['url'])
     return "Short link not found", 404
+@app.route('/events')
+def event():
+    even = events.select()
+    parsed_events = {}
+    for event in even:
+        if event.date:
+            get_month = event.date.strftime('%B')
+            # add event to the parsed_events[month] list
+            if get_month not in parsed_events:
+                parsed_events[get_month] = []
+            parsed_events[get_month].append(event)
+        else:
+            if 'No Date' not in parsed_events:
+                parsed_events['No Date'] = []
+            parsed_events['No Date'].append(event)
+    # sort the months in order putting No Date at the end
+    parsed_events = dict(sorted(parsed_events.items(), key=lambda x: datetime.strptime(x[0], '%B') if x[0] != 'No Date' else datetime.strptime('December', '%B')))
+    return render_template('events.html', parsed_events=parsed_events)
 if __name__ == '__main__':
     app.run(debug=True)

@@ -51,6 +51,16 @@
         filter: blur(5px);
         z-index: -1;
     }
+    .background::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 13vh; /* Adjust height of transparent area */
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.4), transparent);
+        z-index: 0; /* Ensures it blends smoothly */
+    }
 
     .odinbold {
         font-family: 'Odin Rounded';
@@ -68,6 +78,16 @@
         -webkit-text-stroke: 1px #000000;
     }
 </style>
+<header>
+    <div class="navbar">
+        <div class="flex-1"></div>
+        <div class="flex-none gap-4 px-5 odinbold text-bold text-xl">
+          <a href="/events">
+            Events
+          </a>
+        </div>
+      </div>
+</header>
 
 <body>
     <div class="background"></div>
