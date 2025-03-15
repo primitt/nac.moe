@@ -39,11 +39,11 @@ async def create_event(
         name="url", description="URL of the event", required=False)
 ):
     if date:
-        parsed_date = datetime.datetime.strptime(date, "%d/%m/%Y")
+        parsed_date = datetime.datetime.strptime(date, "%m/%d/%Y")
     else:
         parsed_date = None
     if date_end:
-        parsed_date_end = datetime.datetime.strptime(date_end, "%d/%m/%Y")
+        parsed_date_end = datetime.datetime.strptime(date_end, "%m/%d/%Y")
     else:
         parsed_date_end = None
     event = events.create(
