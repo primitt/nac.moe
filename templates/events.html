@@ -11,7 +11,8 @@
     <meta name='og:url' content='https://nac.moe/events'>
     <meta name='og:image' content='https://nac.moe/media/lovebulletjoinanimeclub.png'>
     <meta name='og:site_name' content='NAC'>
-    <meta name='og:description' content='Listed here are events such as meeting information, local events and large conventions in SoCal.'>
+    <meta name='og:description'
+        content='Listed here are events such as meeting information, local events and large conventions in SoCal.'>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=location_on" />
     <link rel="stylesheet"
@@ -103,9 +104,10 @@
         -webkit-text-stroke: 1px #000000;
     }
 </style>
+
 <body class="overflow-x-hidden">
     <div class="background"></div>
-    
+
     <div class="flex items-center justify-center min-h-screen w-screen">
         <div class="card bg-base-100 h-auto min-h-[90vh] min-w-[90vw] ">
             <div class="card-body">
@@ -119,10 +121,11 @@
                         class="odinbold">local events</b> and <b class="odinbold">large conventions in SoCal</b>.</div>
                 <div class="odinlight mb-7">
                     <div class="badge badge-success">NAC</div> - Northwood Anime Club Meeting/Event <br>
-                    <div class="badge badge-neutral">External Event</div> - Local Event/Convention <b class="odinbold">not affiliated with NAC</b>
+                    <div class="badge badge-neutral">External Event</div> - Local Event/Convention <b
+                        class="odinbold">not affiliated with NAC</b>
                 </div>
                 <div class="card-text">
-                    {% if parsed_events|length  == 0 %}
+                    {% if parsed_events|length == 0 %}
                     <div class="text-center">
                         <p class="odinbold text-2xl">No events found</p>
                     </div>
@@ -135,13 +138,13 @@
                         <div class="card bg-base-200 w-auto mb-4 lg:mb-0 lg:max-w-[350px]">
                             <div class="card-body">
                                 {% if event.type == "Meeting" %}
-                                    <div class="badge badge-success">NAC</div>
+                                <div class="badge badge-success">NAC</div>
                                 {% endif %}
                                 {% if event.type == "Convention" or event.type == "Local Event" %}
-                                    <div class="badge badge-neutral">External Event</div>
+                                <div class="badge badge-neutral">External Event</div>
                                 {% endif %}
                                 {% if event.type == "Movie" %}
-                                    <div class="badge badge-primary">Standalone</div>
+                                <div class="badge badge-primary">Standalone</div>
                                 {% endif %}
                                 <p class="odinbold">{{event.type}}</p>
                                 <p class="text-2xl odinbold">{{event.name}}</p>
@@ -150,45 +153,47 @@
                                 {% endif %}
                                 {% if event.date %}
                                 <div class="badge badge-outline badge-neutral h-auto">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        height="16px" viewBox="0 -960 960 960" width="16px" fill="#000000">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960"
+                                        width="16px" fill="#000000">
                                         <path
                                             d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" />
                                     </svg>
                                     {% if event.date_end %}
-                                        &nbsp;{{event.date}} - {{event.date_end}}</div>
-                                    {% else %}
-                                        &nbsp;{{event.date}}</div>
-                                    {% endif %}
-                                {% endif %}
-                                {% if event.time %}
-                                <div class="badge badge-outline badge-neutral h-auto">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960"
-                                        width="16px" fill="#000000">
-                                        <path
-                                            d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
-                                    </svg>
-                                    &nbsp;{{event.time}}
+                                    &nbsp;{{event.date}} - {{event.date_end}}
                                 </div>
-                                {% endif %}
-                                {% if event.location %}
-                                <div class="badge badge-outline badge-neutral h-auto">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960"
-                                        width="16px" fill="#000000">
-                                        <path
-                                            d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
-                                    </svg>
-                                    &nbsp;{{event.location}}
-                                </div>
-                                {% endif %}
+                                {% else %}
+                                &nbsp;{{event.date}}
                             </div>
+                            {% endif %}
+                            {% endif %}
+                            {% if event.time %}
+                            <div class="badge badge-outline badge-neutral h-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960"
+                                    width="16px" fill="#000000">
+                                    <path
+                                        d="m612-292 56-56-148-148v-184h-80v216l172 172ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-400Zm0 320q133 0 226.5-93.5T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160Z" />
+                                </svg>
+                                &nbsp;{{event.time}}
+                            </div>
+                            {% endif %}
+                            {% if event.location %}
+                            <div class="badge badge-outline badge-neutral h-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960"
+                                    width="16px" fill="#000000">
+                                    <path
+                                        d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" />
+                                </svg>
+                                &nbsp;{{event.location}}
+                            </div>
+                            {% endif %}
                         </div>
-                        {% endfor %}
                     </div>
                     {% endfor %}
                 </div>
+                {% endfor %}
             </div>
         </div>
+    </div>
     </div>
 </body>
 
