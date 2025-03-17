@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_from_directory, redirect
 from datetime import datetime, timedelta
 import json
-from db.db import database, events
+from db.db import database, events, news
 
 # TODO: Create a monthly manga recommendations page
 # TODO: Create an events page
@@ -44,7 +44,9 @@ def index():
         meeting_date = meeting_date[0].date.strftime('%B %d, %Y')
     else:
         meeting_date = None
-    return render_template('index.html', meeting_date=meeting_date)
+    # get all the news from the database and sort it by date with the latest news first
+    all_news = news.select().order_by(news.date.desc()).limit(20)
+    return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news))
 @app.route('/media/<path>')
 def media(path):
     return send_from_directory('media', path)

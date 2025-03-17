@@ -23,9 +23,18 @@ class events(BaseModel):
     class Meta:
         table_name = 'events'
 
+class news(BaseModel):
+    id = AutoField()
+    title = TextField()
+    content = TextField()
+    date = DateField()
+    author = TextField()
     
 if not database.table_exists('events'):
     database.create_tables([events])
+
+if not database.table_exists('news'):
+    database.create_tables([news])
 
     
 

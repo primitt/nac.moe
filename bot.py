@@ -3,7 +3,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
-from db.db import database, events
+from db.db import database, events, news
 import datetime
 import os
 
@@ -83,6 +83,37 @@ async def delete_event(
     except events.DoesNotExist:
         await interaction.response.send_message(f"Error: No event found with ID `{event_id}`.", ephemeral=True)
 
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def create_news(
+    interaction: nextcord.Interaction,
+    title: str = nextcord.SlashOption(name="title", description="Title of the news", required=True),
+    content: str = nextcord.SlashOption(name="content", description="Content of the news", required=True),
+):
+    author = interaction.user.nick if interaction.user.nick else interaction.user.name
+    # Create the news
+    news_cmd = news.create(
+        title=title, date=datetime.datetime.now(), content=content, author=author)
+    await interaction.response.send_message(f"News `{news_cmd.title}` with id `{news_cmd.id}` created!")
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def all_news(interaction: nextcord.Interaction):
+    all_news = news.select()
+    news_list = []
+    news_list.append("```News (Title, Content, Date, Author):")
+    for news_cmd in all_news:
+        news_list.append(f"(ID) {news_cmd.id}. {news_cmd.title} - {news_cmd.content} - {news_cmd.date} - {news_cmd.author}")
+    news_list.append("```")
+    await interaction.response.send_message("\n".join(news_list))
 
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def delete_news(
+    interaction: nextcord.Interaction,
+    news_id: int = nextcord.SlashOption(name="id", description="ID of the news", required=True)
+):
+    try:
+        news_cmd = news.get(news.id == news_id)
+        news_cmd.delete_instance()
+        await interaction.response.send_message(f"News `{news_cmd.title}` with id `{news_cmd.id}` deleted!")
+    except news.DoesNotExist:
+        await interaction.response.send_message(f"Error: No news found with ID `{news_id}`.", ephemeral=True)
 
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))

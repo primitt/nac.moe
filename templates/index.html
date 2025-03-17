@@ -220,13 +220,27 @@
         </div>  
         <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white">
             <div class="w-12/12 lg:mx-20">
-                <div class="card bg-base-100 h-auto min-h-[60svh] lg:min-w-[45svw] min-w-[90svw] mt-5 lg:mt-0">
-                    <div class="card-body">
-                        <h2 class="card-title text-black odinbold text-3xl">News (beta)</h2>
-                        <div class="divider mt-0 mb-2"></div>
-                        
-                    </div>
+            <div class="card bg-base-100 h-auto min-h-[60svh] lg:min-w-[45svw] min-w-[90svw] mt-5 lg:mt-0">
+                <div class="card-body">
+                <h2 class="card-title text-black odinbold text-3xl">News (beta)</h2>
+                <div class="divider mt-0 mb-2">
                 </div>
+                <div class="overflow-y-scroll h-[60svh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                    {% if all_news|length == 0 %}
+                    <div class="text-center">
+                        <p class="odinregular text-2xl text-black">No news yet...</p>
+                    </div>
+                    {% endif %}
+                    {% for news in all_news %}
+                    <div class="mb-5">
+                    <p class="odinbold text-black text-xl">{{news.title}}</p>
+                    <p class="odinregular text-black">{{news.content}}</p>
+                    <p class="text-sm text-black text-end">Posted on {{news.date}} by {{news.author}}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                </div>
+            </div>
             </div>
         </div>
     </section>
