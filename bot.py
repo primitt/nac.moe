@@ -66,9 +66,11 @@ async def create_event(
 async def all_events(interaction: nextcord.Interaction):
     all_events = events.select()
     event_list = []
-    event_list.append("Events (Name, Type, Date, Ending Date, Time, Location, URL):")
+    event_list.append("```Events (Name, Type, Date, Ending Date, Time, Location, URL):")
     for event in all_events:
         event_list.append(f"(ID) {event.id}. {event.name} - {event.type} - {event.date} - {event.date_end} - {event.time} - {event.location} - {event.url}")
+        event_list.append("\n")
+    event_list.append("```")
     await interaction.response.send_message("\n".join(event_list))  
 
 @bot.slash_command(guild_ids=[1342913889544962090])
@@ -101,6 +103,7 @@ async def all_news(interaction: nextcord.Interaction):
     news_list.append("```News (Title, Content, Date, Author):")
     for news_cmd in all_news:
         news_list.append(f"(ID) {news_cmd.id}. {news_cmd.title} - {news_cmd.content} - {news_cmd.date} - {news_cmd.author}")
+        news_list.append("\n")
     news_list.append("```")
     await interaction.response.send_message("\n".join(news_list))
 
