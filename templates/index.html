@@ -126,11 +126,23 @@
                     style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">&nbsp;{{meeting_date}}</span>
                 {% else %}
                 <span class="odinbold text-3xl text-white"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Our next meeting has not been scheduled yet!</span>
+                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Our next meeting has not been scheduled
+                    yet!</span>
                 {% endif %}
-                <div class="flex justify-center mt-7 odinregular">
-                    <a href="/events"
-                        class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl">Events</a>
+                <div class="flex justify-center mt-7 odinregular gap-3">
+                    <a href="/events" class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl"><svg
+                            xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#000000">
+                            <path
+                                d="M580-240q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z" />
+                        </svg>Events</a>
+                    <a href="#news" class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl"><svg
+                            xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#0000000">
+                            <path
+                                d="M160-120q-33 0-56.5-23.5T80-200v-640l67 67 66-67 67 67 67-67 66 67 67-67 67 67 66-67 67 67 67-67 66 67 67-67v640q0 33-23.5 56.5T800-120H160Zm0-80h280v-240H160v240Zm360 0h280v-80H520v80Zm0-160h280v-80H520v80ZM160-520h640v-120H160v120Z" />
+                        </svg>
+                        News</a>
                 </div>
             </div>
         </div>
@@ -217,30 +229,32 @@
                     After School, We Wander in Space by Saitou Yuu | Vol. 1, Ch. 1 | Typeset/Edit: Priansh
                 </div>
             </div>
-        </div>  
+        </div>
         <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white">
             <div class="w-12/12 lg:mx-20">
-            <div class="card bg-base-100 h-auto min-h-[60svh] lg:min-w-[45svw] min-w-[90svw] mt-5 lg:mt-0">
-                <div class="card-body">
-                <h2 class="card-title text-black odinbold text-3xl">News (beta)</h2>
-                <div class="divider mt-0 mb-2">
-                </div>
-                <div class="overflow-y-scroll h-[60svh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                    {% if all_news|length == 0 %}
-                    <div class="text-center">
-                        <p class="odinregular text-2xl text-black">No news yet...</p>
+                <div class="card bg-base-100 h-auto min-h-[60svh] lg:min-w-[45svw] min-w-[90svw] mt-5 lg:mt-0">
+                    <div class="card-body">
+                        <h2 class="card-title text-black odinbold text-3xl">News (beta)</h2>
+                        <div class="divider mt-0 mb-2">
+                        </div>
+                        <div
+                            class="overflow-y-scroll h-[60svh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                            {% if all_news|length == 0 %}
+                            <div class="text-center">
+                                <p class="odinregular text-2xl text-black">No news yet...</p>
+                            </div>
+                            {% endif %}
+                            {% for news in all_news %}
+                            <div class="mb-5">
+                                <p class="odinbold text-black text-xl">{{news.title}}</p>
+                                <p class="odinregular text-black">{{news.content}}</p>
+                                <p class="text-sm text-black text-end">Posted on {{news.date.strftime('%B %d, %Y')}} by
+                                    {{news.author}}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endif %}
-                    {% for news in all_news %}
-                    <div class="mb-5">
-                    <p class="odinbold text-black text-xl">{{news.title}}</p>
-                    <p class="odinregular text-black">{{news.content}}</p>
-                    <p class="text-sm text-black text-end">Posted on {{news.date}} by {{news.author}}</p>
-                    </div>
-                    {% endfor %}
                 </div>
-                </div>
-            </div>
             </div>
         </div>
     </section>
@@ -264,12 +278,12 @@
 
 </body>
 <script>
-    $(window).scroll(function(){
+    $(window).scroll(function () {
         var topscroll = $(this).scrollTop();
         var screenheight = $(window).height();
-        var calculate_opacity = 1 - (topscroll/screenheight) > 0.7 ? 1 - (topscroll/screenheight) : 0.7;
+        var calculate_opacity = 1 - (topscroll / screenheight) > 0.7 ? 1 - (topscroll / screenheight) : 0.7;
 
-        $(".background").css("top", -topscroll/50);
+        $(".background").css("top", -topscroll / 50);
         $(".background").css("opacity", calculate_opacity);
     });
 </script>

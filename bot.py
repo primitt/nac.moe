@@ -7,7 +7,7 @@ from db.db import database, events, news
 import datetime
 import os
 
-load_dotenv()
+load_dotenv(override=True)
 
 bot = commands.Bot(command_prefix=["Mi!", "mi!"],
                    intents=nextcord.Intents.all())
