@@ -4,7 +4,6 @@ import json
 from db.db import database, events, news
 
 # TODO: Create a monthly manga recommendations page
-# TODO: Create an events page
 # TODO: Create a meet the board page
 # TODO: Add contact information and proper, nice footer
 
@@ -35,7 +34,12 @@ from db.db import database, events, news
 #                 return current_date
 
 
+registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3go34lME8UWC0dMvBVzSx0HfaVezoRfwA/viewform?usp=dialog"
 app = Flask(__name__)
+
+@app.route('/reg')
+def reg():
+    return redirect(registration_form)
 
 @app.route('/', methods=['GET'])
 def index():
