@@ -106,31 +106,39 @@
 <body>
     <div class="background"></div>
     <div class="px-5 lg:px-10 pt-5 lg:pt-5 flex flex-col lg:flex-row items-center">
-    <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white min-h-full w-full">
-        <div class="w-full lg:mx-20">
-            <div class="card bg-base-100 min-h-full lg:min-w-full min-w-full mt-5 lg:mt-0">
-                <div class="card-body">
-                    <h2 class="card-title text-black odinbold text-4xl">News <span class="text-lg badge badge-soft badge-accent">beta</span></h2>
-                    <div class="divider mt-0 mb-2"></div>
-                    <div class="overflow-y-scroll h-[80vh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                        {% if all_news|length == 0 %}
-                        <div class="text-center">
-                            <p class="odinregular text-3xl text-black">No news yet...</p>
+        <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white min-h-full w-full">
+            <div class="w-full lg:mx-20">
+                <div class="card bg-base-100 min-h-full lg:min-w-full min-w-full mt-5 lg:mt-0">
+                    <div class="card-body">
+                        <h2 class="card-title text-black odinbold text-4xl">News <span
+                                class="text-lg badge badge-soft badge-accent">beta</span></h2>
+                        <!-- back to home btn -->
+                        <div class="odinlight">
+                            <a href="/"
+                                class="btn btn-ghost btn-sm bg-[#F4ACB7] hover:bg-[#D0929B] text-xl text-black w-fit">Back to Home</a>
                         </div>
-                        {% endif %}
-                        {% for news in all_news %}
-                        <div class="mb-5">
-                            <p class="odinbold text-black text-2xl">{{news.title}}</p>
-                            <p class="odinregular text-black text-lg">{{news.content | safe}}</p>
-                            <p class="text-base text-black text-end">Posted on {{news.date.strftime('%B %d, %Y')}} by
-                                {{news.author}}</p>
+                        <div class="divider mt-0 mb-2"></div>
+                        <div
+                            class="overflow-y-scroll h-[80vh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                            {% if all_news|length == 0 %}
+                            <div class="text-center">
+                                <p class="odinregular text-3xl text-black">No news yet...</p>
+                            </div>
+                            {% endif %}
+                            {% for news in all_news %}
+                            <div class="mb-5">
+                                <p class="odinbold text-black text-2xl">{{news.title}}</p>
+                                <p class="odinregular text-black text-lg">{{news.content | safe}}</p>
+                                <p class="text-base text-black text-end">Posted on {{news.date.strftime('%B %d, %Y')}}
+                                    by
+                                    {{news.author}}</p>
+                            </div>
+                            {% endfor %}
                         </div>
-                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </body>
 <script>
