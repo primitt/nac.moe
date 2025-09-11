@@ -51,7 +51,7 @@ def index():
     else:
         meeting_date = None
     # get all the news from the database and sort it by date with the latest news first
-    all_news = news.select().order_by(news.date.desc()).limit(20)
+    all_news = news.select().order_by(news.date.desc()).limit(10)
     # make an object with all the settings so i can do site_vars.default_dt and access the value
     site_vars = {}
     for setting in settings.select():
@@ -94,6 +94,11 @@ def event():
     # sort the months in order putting No Date at the end
     parsed_events = dict(sorted(parsed_events.items(), key=lambda x: datetime.strptime(x[0], '%B') if x[0] != 'No Date' else datetime.strptime('December', '%B')))
     return render_template('events.html', parsed_events=parsed_events)
+@app.route('/news')
+def news_page():
+    all_news = news.select().order_by(news.date.desc())
+    return render_template('news.html', all_news=list(all_news))
+
 if __name__ == '__main__':
     # create base settings if not exist: default_dt, default_loc, default_why, default_what
     for setting in DEFAULTS:
