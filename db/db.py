@@ -29,12 +29,21 @@ class news(BaseModel):
     content = TextField()
     date = DateField()
     author = TextField()
+
+class settings(BaseModel):
+    name = TextField(unique=True)
+    value = TextField()
+    class Meta:
+        table_name = 'settings'
+
     
 if not database.table_exists('events'):
     database.create_tables([events])
 
 if not database.table_exists('news'):
     database.create_tables([news])
+if not database.table_exists('settings'):
+    database.create_tables([settings])
 
     
 

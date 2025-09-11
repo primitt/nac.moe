@@ -3,7 +3,7 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
-from db.db import database, events, news
+from db.db import database, events, news, settings
 import datetime
 import os
 
@@ -119,4 +119,44 @@ async def delete_news(
     except news.DoesNotExist:
         await interaction.response.send_message(f"Error: No news found with ID `{news_id}`.", ephemeral=True)
 
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def get_setting(
+    interaction: nextcord.Interaction,
+    setting_name: str = nextcord.SlashOption(name="name", description="Name of the setting, blank to get all", required=False)
+):
+    if setting_name:
+        setting = settings.get(settings.name == setting_name)
+        await interaction.response.send_message(f"Setting `{setting.name}` has value: `{setting.value}`")
+    else:
+        all_settings = settings.select()
+        settings_list = [f"Setting `{s.name}` has value: `{s.value}`" for s in all_settings]
+        await interaction.response.send_message("\n".join(settings_list))
+        
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def set_setting(
+    interaction: nextcord.Interaction,
+    setting_name: str = nextcord.SlashOption(name="name", description="Name of the setting", required=True),
+    setting_value: str = nextcord.SlashOption(name="value", description="Value of the setting", required=True)
+):
+    setting = settings.select().where(settings.name == setting_name).first()
+    if not setting:
+        await interaction.response.send_message(f"Error: Setting with name `{setting_name}` does not exist.", ephemeral=True)
+        return 
+    setting.value = setting_value
+    setting.save()
+    await interaction.response.send_message(f"Setting `{setting.name}` updated to value: `{setting.value}`")
+
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def create_setting(
+    interaction: nextcord.Interaction,
+    setting_name: str = nextcord.SlashOption(name="name", description="Name of the setting", required=True),
+    setting_value: str = nextcord.SlashOption(name="value", description="Value of the setting", required=True)
+):
+    setting, created = settings.get_or_create(name=setting_name, defaults={'value': setting_value})
+    if not created:
+        await interaction.response.send_message(f"Error: Setting with name `{setting_name}` already exists.", ephemeral=True)
+        return
+    await interaction.response.send_message(f"Setting `{setting.name}` created with value: `{setting.value}`")
+        
+        
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))

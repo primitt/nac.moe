@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_from_directory, redirect
 from datetime import datetime, timedelta
 import json
-from db.db import database, events, news
+from db.db import database, events, news, settings
 
 # TODO: Create a monthly manga recommendations page
 # TODO: Create a meet the board page
@@ -37,6 +37,8 @@ from db.db import database, events, news
 registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3go34lME8UWC0dMvBVzSx0HfaVezoRfwA/viewform?usp=dialog"
 app = Flask(__name__)
 
+DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
+
 @app.route('/reg')
 def reg():
     return redirect(registration_form)
@@ -50,7 +52,12 @@ def index():
         meeting_date = None
     # get all the news from the database and sort it by date with the latest news first
     all_news = news.select().order_by(news.date.desc()).limit(20)
-    return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news))
+    # make an object with all the settings so i can do site_vars.default_dt and access the value
+    site_vars = {}
+    for setting in settings.select():
+        site_vars[setting.name] = setting.value
+    site_vars = type('obj', (object,), site_vars)
+    return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news), site_vars=site_vars)
 @app.route('/media/<path>')
 def media(path):
     return send_from_directory('media', path)
@@ -88,4 +95,7 @@ def event():
     parsed_events = dict(sorted(parsed_events.items(), key=lambda x: datetime.strptime(x[0], '%B') if x[0] != 'No Date' else datetime.strptime('December', '%B')))
     return render_template('events.html', parsed_events=parsed_events)
 if __name__ == '__main__':
+    # create base settings if not exist: default_dt, default_loc, default_why, default_what
+    for setting in DEFAULTS:
+        settings.get_or_create(name=setting, value="TBD")
     app.run(debug=True)
