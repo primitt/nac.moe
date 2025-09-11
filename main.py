@@ -97,5 +97,7 @@ def event():
 if __name__ == '__main__':
     # create base settings if not exist: default_dt, default_loc, default_why, default_what
     for setting in DEFAULTS:
-        settings.get_or_create(name=setting, value="TBD")
+        if not settings.get_or_none(name=setting):
+            settings.create(name=setting, value="TBD")
+
     app.run(debug=True)
