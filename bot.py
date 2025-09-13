@@ -3,10 +3,14 @@ from typing import Optional
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
-from db.db import database, events, news, settings
+from db.db import database, events, news, settings, officers
 import datetime
 import os
+from AnilistPython import Anilist
+import requests
 
+
+anilist = Anilist()
 load_dotenv(override=True)
 
 bot = commands.Bot(command_prefix=["Mi!", "mi!"],
@@ -157,6 +161,144 @@ async def create_setting(
         await interaction.response.send_message(f"Error: Setting with name `{setting_name}` already exists.", ephemeral=True)
         return
     await interaction.response.send_message(f"Setting `{setting.name}` created with value: `{setting.value}`")
-        
-        
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def add_officer(
+    interaction: nextcord.Interaction,
+    name: str = nextcord.SlashOption(name="name", description="Name of the officer", required=True),
+    position: str = nextcord.SlashOption(name="position", description="Position of the officer", required=True),
+    bio: str = nextcord.SlashOption(name="bio", description="Bio of the officer", required=True),
+    pfp: Optional[str] = nextcord.SlashOption(name="pfp", description="Profile picture URL of the officer", required=False),
+    favorite_anime: Optional[str] = nextcord.SlashOption(name="favorite_anime", description="Favorite anime of the officer (enter AniList URL)", required=False)
+):
+    if pfp is None:
+        pfp = "https://upload.wikimedia.org/wikipedia/commons/a/ac/Default_pfp.jpg"
+    if favorite_anime is not None:
+        # extract the id from the url
+        try:
+            if "anilist.co/anime/" in favorite_anime:
+                ani_id = int(favorite_anime.split("anilist.co/anime/")[1].split("/")[0])
+            else:
+                await interaction.response.send_message("Error: Invalid AniList URL. Please provide a valid URL.", ephemeral=True)
+                return
+            print(ani_id)
+            ani_data = anilist.get_anime_with_id(ani_id)
+            fav_name = ani_data['name_english']
+            fav_img = ani_data['cover_image']
+            fav_genre = ", ".join(ani_data['genres']) if 'genres' in ani_data else "N/A"
+            fav_season = f"{ani_data['season'][0]}{ani_data['season'][1:].lower()} {ani_data['starting_time'].split('/')[-1]}" if 'season' in ani_data and 'starting_time' in ani_data else "N/A"
+            fav_bio = ani_data['desc'] if 'desc' in ani_data else "N/A"
+            fav_score_al = str(ani_data['average_score']) if 'average_score' in ani_data else "N/A"
+            fav_score_mal = "N/A"
+            # call mal api to get the score https://api.jikan.moe/v4/anime?q={query name here}&limit=1
+            mal_response = requests.get(f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1")
+            if mal_response.status_code == 200:
+                mal_data = mal_response.json()
+                if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
+                    fav_score_mal = str(mal_data['data'][0]['score'])
+        except Exception as e:
+            await interaction.response.send_message(f"Error: Could not fetch anime/manga data. {str(e)}", ephemeral=True)
+            return
+        officers.create(
+            name=name, position=position, bio=bio, pfp=pfp, favorite_anime_enabled=True,
+            favorite_anime_name=fav_name, favorite_anime_img=fav_img, favorite_anime_genre=fav_genre,
+            favorite_anime_season=fav_season, favorite_anime_bio=fav_bio,
+            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal
+        )
+        await interaction.response.send_message(f"Officer `{name}` created with favorite anime `{fav_name}`!")
+    else:
+        officers.create(
+            name=name, position=position, bio=bio, pfp=pfp
+        )
+        await interaction.response.send_message(f"Officer `{name}` created without a favorite anime!")
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def edit_officer(
+    interaction: nextcord.Interaction,
+    officer_id: int = nextcord.SlashOption(name="id", description="ID of the officer", required=True),
+    name: Optional[str] = nextcord.SlashOption(name="name", description="Name of the officer", required=False),
+    position: Optional[str] = nextcord.SlashOption(name="position", description="Position of the officer", required=False),
+    bio: Optional[str] = nextcord.SlashOption(name="bio", description="Bio of the officer", required=False),
+    pfp: Optional[str] = nextcord.SlashOption(name="pfp", description="Profile picture URL of the officer", required=False),
+    favorite_anime: Optional[str] = nextcord.SlashOption(name="favorite_anime", description="Favorite anime of the officer (enter AniList URL)", required=False),
+    disable_favorite_anime: Optional[bool] = nextcord.SlashOption(name="disable_favorite_anime", description="Disable favorite anime section", required=False, default=False)
+):
+    try:
+        officer = officers.get(officers.id == officer_id)
+    except officers.DoesNotExist:
+        await interaction.response.send_message(f"Error: No officer found with ID `{officer_id}`.", ephemeral=True)
+        return
+    if name:
+        officer.name = name
+    if position:
+        officer.position = position
+    if bio:
+        officer.bio = bio
+    if pfp:
+        officer.pfp = pfp
+    if favorite_anime:
+        try:
+            if "anilist.co/anime/" in favorite_anime:
+                ani_id = int(favorite_anime.split("anilist.co/anime/")[1].split("/")[0])
+            else:
+                await interaction.response.send_message("Error: Invalid AniList URL. Please provide a valid URL.", ephemeral=True)
+                return
+            print(ani_id)
+            ani_data = anilist.get_anime_with_id(ani_id)
+            fav_name = ani_data['name_english']
+            fav_img = ani_data['cover_image']
+            fav_genre = ", ".join(ani_data['genres']) if 'genres' in ani_data else "N/A"
+            fav_season = f"{ani_data['season'][0]}{ani_data['season'][1:].lower()} {ani_data['starting_time'].split('/')[-1]}" if 'season' in ani_data and 'starting_time' in ani_data else "N/A"
+            fav_bio = ani_data['desc'] if 'desc' in ani_data else "N/A"
+            fav_score_al = str(ani_data['average_score']) if 'average_score' in ani_data else "N/A"
+            fav_score_mal = "N/A"
+            # call mal api to get the score https://api.jikan.moe/v4/anime?q={query name here}&limit=1
+            mal_response = requests.get(f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1")
+            if mal_response.status_code == 200:
+                mal_data = mal_response.json()
+                if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
+                    fav_score_mal = str(mal_data['data'][0]['score'])
+        except Exception as e:
+            await interaction.response.send_message(f"Error: Could not fetch anime/manga data. {str(e)}", ephemeral=True)
+            return
+        officer.favorite_anime_enabled = True
+        officer.favorite_anime_name = fav_name
+        officer.favorite_anime_img = fav_img
+        officer.favorite_anime_genre = fav_genre
+        officer.favorite_anime_season = fav_season
+        officer.favorite_anime_bio = fav_bio
+        officer.favorite_anime_score_al = fav_score_al
+        officer.favorite_anime_score_mal = fav_score_mal
+    if disable_favorite_anime:
+        officer.favorite_anime_enabled = False
+        officer.favorite_anime_name = None
+        officer.favorite_anime_img = None
+        officer.favorite_anime_genre = None
+        officer.favorite_anime_season = None
+        officer.favorite_anime_bio = None
+        officer.favorite_anime_score_al = None
+        officer.favorite_anime_score_mal = None
+    await interaction.response.send_message(f"Officer `{officer.name}` with id `{officer.id}` updated!")
+    officer.save()
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def all_officers(interaction: nextcord.Interaction):
+    all_officers = officers.select()
+    officer_list = []
+    officer_list.append("```Officers (Name, Position, Bio, Favorite Anime Enabled, Favorite Anime Name, Favorite Anime Genre, Favorite Anime Season, Favorite Anime Score AniList, Favorite Anime Score MyAnimeList):")
+    for officer in all_officers:
+        officer_list.append(f"(ID) {officer.id}. {officer.name} - {officer.position} - {officer.bio} - {officer.favorite_anime_enabled} - {officer.favorite_anime_name} - {officer.favorite_anime_genre} - {officer.favorite_anime_season} - {officer.favorite_anime_score_al} - {officer.favorite_anime_score_mal}")
+        officer_list.append("\n")
+    officer_list.append("```")
+    await interaction.response.send_message("\n".join(officer_list))
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def delete_officer(
+    interaction: nextcord.Interaction,
+    officer_id: int = nextcord.SlashOption(name="id", description="ID of the officer", required=True)
+):
+    try:
+        officer = officers.get(officers.id == officer_id)
+        officer.delete_instance()
+        await interaction.response.send_message(f"Officer `{officer.name}` with id `{officer.id}` deleted!")
+    except officers.DoesNotExist:
+        await interaction.response.send_message(f"Error: No officer found with ID `{officer_id}`.", ephemeral=True)
+
+
 bot.run(os.getenv("DISCORD_BOT_TOKEN"))

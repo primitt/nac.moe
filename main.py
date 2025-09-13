@@ -3,9 +3,11 @@ from datetime import datetime, timedelta
 import json
 from db.db import database, events, news, settings
 
-# TODO: Create a monthly manga recommendations page
-# TODO: Create a meet the board page
+# TODO: Create a monthly anime recommendations page
+# TODO: Create a meet the board page cal.moe/officers
+    # TODO: Create the actual page
 # TODO: Add contact information and proper, nice footer
+# TODO: Change the color of the registration button
 
 
 # DEPRECATED

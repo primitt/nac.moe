@@ -29,6 +29,25 @@ class news(BaseModel):
     content = TextField()
     date = DateField()
     author = TextField()
+    class Meta:
+        table_name = 'news'
+
+class officers(BaseModel):
+    id = AutoField()
+    pfp = TextField()
+    name = TextField()
+    position = TextField()
+    bio = TextField()
+    favorite_anime_enabled = BooleanField(default=False)
+    favorite_anime_name = TextField(null=True)
+    favorite_anime_img = TextField(null=True)
+    favorite_anime_genre = TextField(null=True)
+    favorite_anime_season = TextField(null=True)
+    favorite_anime_bio = TextField(null=True)
+    favorite_anime_score_al = TextField(null=True)
+    favorite_anime_score_mal = TextField(null=True)
+    class Meta:
+        table_name = 'officers'
 
 class settings(BaseModel):
     name = TextField(unique=True)
@@ -44,6 +63,8 @@ if not database.table_exists('news'):
     database.create_tables([news])
 if not database.table_exists('settings'):
     database.create_tables([settings])
+if not database.table_exists('officers'):
+    database.create_tables([officers])
 
     
 
