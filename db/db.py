@@ -46,6 +46,7 @@ class officers(BaseModel):
     favorite_anime_bio = TextField(null=True)
     favorite_anime_score_al = TextField(null=True)
     favorite_anime_score_mal = TextField(null=True)
+    favorite_anime_url_al = TextField(null=True)
     class Meta:
         table_name = 'officers'
 
@@ -58,7 +59,6 @@ class settings(BaseModel):
     
 if not database.table_exists('events'):
     database.create_tables([events])
-
 if not database.table_exists('news'):
     database.create_tables([news])
 if not database.table_exists('settings'):

@@ -184,6 +184,7 @@ async def add_officer(
             ani_data = anilist.get_anime_with_id(ani_id)
             fav_name = ani_data['name_english']
             fav_img = ani_data['cover_image']
+            fav_url = f"https://anilist.co/anime/{ani_id}"
             fav_genre = ", ".join(ani_data['genres']) if 'genres' in ani_data else "N/A"
             fav_season = f"{ani_data['season'][0]}{ani_data['season'][1:].lower()} {ani_data['starting_time'].split('/')[-1]}" if 'season' in ani_data and 'starting_time' in ani_data else "N/A"
             fav_bio = ani_data['desc'] if 'desc' in ani_data else "N/A"
@@ -202,7 +203,7 @@ async def add_officer(
             name=name, position=position, bio=bio, pfp=pfp, favorite_anime_enabled=True,
             favorite_anime_name=fav_name, favorite_anime_img=fav_img, favorite_anime_genre=fav_genre,
             favorite_anime_season=fav_season, favorite_anime_bio=fav_bio,
-            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal
+            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal, favorite_anime_url=fav_url
         )
         await interaction.response.send_message(f"Officer `{name}` created with favorite anime `{fav_name}`!")
     else:
@@ -245,6 +246,7 @@ async def edit_officer(
             ani_data = anilist.get_anime_with_id(ani_id)
             fav_name = ani_data['name_english']
             fav_img = ani_data['cover_image']
+            fav_url = f"https://anilist.co/anime/{ani_id}"
             fav_genre = ", ".join(ani_data['genres']) if 'genres' in ani_data else "N/A"
             fav_season = f"{ani_data['season'][0]}{ani_data['season'][1:].lower()} {ani_data['starting_time'].split('/')[-1]}" if 'season' in ani_data and 'starting_time' in ani_data else "N/A"
             fav_bio = ani_data['desc'] if 'desc' in ani_data else "N/A"
@@ -262,6 +264,7 @@ async def edit_officer(
         officer.favorite_anime_enabled = True
         officer.favorite_anime_name = fav_name
         officer.favorite_anime_img = fav_img
+        officer.favorite_anime_url = fav_url
         officer.favorite_anime_genre = fav_genre
         officer.favorite_anime_season = fav_season
         officer.favorite_anime_bio = fav_bio
@@ -271,6 +274,7 @@ async def edit_officer(
         officer.favorite_anime_enabled = False
         officer.favorite_anime_name = None
         officer.favorite_anime_img = None
+        officer.favorite_anime_url = None
         officer.favorite_anime_genre = None
         officer.favorite_anime_season = None
         officer.favorite_anime_bio = None

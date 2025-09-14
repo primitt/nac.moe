@@ -6,6 +6,7 @@ from db.db import database, events, news, settings
 # TODO: Create a monthly anime recommendations page
 # TODO: Create a meet the board page cal.moe/officers
     # TODO: Create the actual page
+    # FIXME: Officer images NEED to be moved off of catbox. Find a new CDN, or create it myself. files.nac.moe?
 # TODO: Add contact information and proper, nice footer
 # TODO: Change the color of the registration button
 
