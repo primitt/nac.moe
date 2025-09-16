@@ -102,7 +102,10 @@
         -webkit-text-stroke: 1px #000000;
     }
 </style>
-
+<header>
+    {% include 'header_skel.html' %}
+    {% block header %}{% endblock %}
+</header>
 <body>
     <div class="background"></div>
     <section class="h-screen flex flex-col">
@@ -130,19 +133,6 @@
                     yet!</span>
                 {% endif %}
                 <div class="flex justify-center mt-7 odinregular gap-3">
-                    <a href="/events" class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl"><svg
-                            xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                            fill="#000000">
-                            <path
-                                d="M580-240q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z" />
-                        </svg>Events</a>
-                    <a href="#news" class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl"><svg
-                            xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                            fill="#0000000">
-                            <path
-                                d="M160-120q-33 0-56.5-23.5T80-200v-640l67 67 66-67 67 67 67-67 66 67 67-67 67 67 66-67 67 67 67-67 66 67 67-67v640q0 33-23.5 56.5T800-120H160Zm0-80h280v-240H160v240Zm360 0h280v-80H520v80Zm0-160h280v-80H520v80ZM160-520h640v-120H160v120Z" />
-                        </svg>
-                        News</a>
 
                     <div class="tooltip" data-tip="This will redirect you to Google Forms">
                         <a href="/reg" class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl">

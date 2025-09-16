@@ -103,6 +103,11 @@
     }
 </style>
 
+<header>
+    {% include 'header_skel.html' %}
+    {% block header %}{% endblock %}
+</header>
+
 <body>
     <div class="background"></div>
     <div class="px-5 lg:px-10 pt-5 lg:pt-5 flex flex-col lg:flex-row items-center">
@@ -110,13 +115,8 @@
             <div class="w-full lg:mx-20">
                 <div class="card bg-base-100 min-h-full lg:min-w-full min-w-full mt-5 lg:mt-0">
                     <div class="card-body">
-                        <h2 class="card-title text-black odinbold text-4xl">News <span
+                        <h2 class="card-title text-black odinbold text-5xl">News <span
                                 class="text-lg badge badge-soft badge-accent">beta</span></h2>
-                        <!-- back to home btn -->
-                        <div class="odinlight">
-                            <a href="/"
-                                class="btn btn-ghost btn-sm bg-[#F4ACB7] hover:bg-[#D0929B] text-xl text-black w-fit">Back to Home</a>
-                        </div>
                         <div class="divider mt-0 mb-2"></div>
                         <div
                             class="overflow-y-scroll h-[80vh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
