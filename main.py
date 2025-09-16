@@ -4,12 +4,16 @@ import json
 from db.db import database, events, news, settings, officers
 
 # TODO: Create a monthly anime recommendations page
-# TODO: Create a meet the board page cal.moe/officers
-    # TODO: Create the actual page
-    # FIXME: Officer images NEED to be moved off of catbox. Find a new CDN, or create it myself. files.nac.moe?
+    # TODO: Bot Commands
+    # TODO: Create page for reviews
+# TODO: BUG FIXES
+    # TODO: BUG - index.html - fix no meeting date spacing on mobile
+# TODO: Officers Page - Create re-ordering system
 # TODO: Add contact information and proper, nice footer
-# TODO: Change the color of the registration button
-
+# TODO: About Page
+# TODO: Change the color of the registration button (?? header has been changed, maybe this isnt needed)
+# TODO: Add a 404 page
+# TODO: CLEAN UP CODE AND PAGES
 
 # DEPRECATED
 # def next_first_or_third_tuesday(start_date=None):
