@@ -1,0 +1,195 @@
+<html data-theme="light">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preload" href="./media/Odin-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="./media/TightSpotBB-BoldItalic.woff" as="font" type="font/woff" crossorigin>
+    <link rel="preload" href="./media/Odin-Bold.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="./media/TightSpotBB-BoldItalic.woff" as="font" type="font/woff" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name='og:title' content='Northwood High School Anime Club'>
+    <meta name='og:type' content='website'>
+    <meta name='og:url' content='https://nac.moe'>
+    <meta name='og:image' content='https://nac.moe/media/lovebulletjoinanimeclub.png'>
+    <meta name='og:site_name' content='NAC'>
+    <meta name='og:description' content='Northwood High School Anime Club'>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=stat_minus_3" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <title>Northwood High School Anime Club</title>
+</head>
+<style>
+    @font-face {
+        font-family: 'Odin Rounded';
+        src: url('./media/Odin-Bold.woff2') format('woff2');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'TightSpot BB';
+        src: url('./media/TightSpotBB-BoldItalic.woff') format('woff');
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Odin Rounded';
+        src: url('.//media/odin-rounded.regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Odin Rounded';
+        src: url('.//media/odin-rounded.light.woff') format('woff');
+        font-weight: lighter;
+        font-style: normal;
+    }
+
+    /* Black background layer */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: black;
+        z-index: -2;
+    }
+
+    /* Background image overlay */
+    .background {
+        position: fixed;
+        top: -20px;
+        left: -20px;
+        width: 120%;
+        height: 120%;
+        opacity: 80%;
+        background: url("/media/background.png") no-repeat center center;
+        background-size: cover;
+        filter: blur(8px);
+        z-index: -1;
+    }
+
+    .odinbold {
+        font-family: 'Odin Rounded';
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    .tightspotbolditalic {
+        font-family: 'TightSpot BB';
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    .odinregular {
+        font-family: 'Odin Rounded';
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    .odinlight {
+        font-family: 'Odin Rounded';
+        font-weight: lighter;
+        font-style: normal;
+    }
+
+    .animetext {
+        -webkit-text-stroke: 1px #000000;
+    }
+</style>
+
+<body>
+    <div class="background"></div>
+    <div>
+        <div class="m-20">
+            <h1 class="odinbold text-5xl odinbold text-white">Meet the Board</h1>
+            <h2 class="odinlight text-2xl odinlight text-white mt-2 w-1/2">Learn more about the dedicated officers who
+                help run our club! Each officer plays a key role in organizing events, managing outreach, and keeping
+                things running smoothly.</h2>
+            <h3 class="odinregular text-md text-white mt-2 w-1/2">
+                To view an officer's favorite anime in detail, please click on the image associated with the anime.
+            </h3>
+            <div class="divider divider-neutral"></div>
+        </div>
+        {% if officers|length == 0 %}
+        <div class="text-center text-white">
+            <h2 class="odinbold text-2xl">No Officers Found for the Current Season</h2>
+            <p class="odinregular text-md">It seems that there are no officers available at the moment. Please check
+                back later!</p>
+        </div>
+        {% endif %}
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 px-20 mb-20 text-white">
+            {% for officer in officers %}
+            <div class="card bg-base-100 shadow-xl glass" style="background: rgba(0, 0, 0, 0.3);">
+                <div class="card-body">
+                    <div class="card-image flex justify-center pt-5">
+                        <div class="avatar">
+                            <div class="rounded w-32">
+                                <img src="{{ officer.pfp }}" alt="Officer Profile Picture" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-center items-center text-center">
+                        <div>
+                            <h2 class="odinbold text-3xl">{{ officer.name }}</h2>
+                            <h3 class="odinlight text-xl">{{ officer.position }}</h3>
+                            <p class="odinregular text-base">{{ officer.bio }}</p>
+                            <div class="divider divider-neutral"></div>
+                        </div>
+                    </div>
+                    {% if officer.favorite_anime_enabled %}
+                    <div>
+                        <h2 class="card-title odinbold text-2xl mb-5">Favorite Anime</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3">
+                            <div>
+                                <a href="{{ officer.favorite_anime_url_al}}"><img src="{{ officer.favorite_anime_img }}"
+                                        alt="Favorite Anime Image" class="w-32 h-auto" /></a>
+                            </div>
+                            <div class="col-span-2">
+                                <p class="odinbold text-xl">{{ officer.favorite_anime_name }}</p>
+                                <p class="odinlight text-sm">{{ officer.favorite_anime_season }}</p>
+                                <p class="odinregular text-sm">{{ officer.favorite_anime_genre }}</p>
+                                <p class="odinregular text-sm">
+                                    {{ officer.favorite_anime_bio[:120] | safe }}{% if officer.favorite_anime_bio|length
+                                    > 100 %}...<span class="font-bold">(Click the image to view more details)</span>{%
+                                    endif %}
+                                </p>
+                                <div class="flex flex-col mt-1">
+                                    <div class="flex">
+                                        <p class="odinregular text-2xl flex items-center">
+                                            {{ officer.favorite_anime_score_al }}%<img src="/media/anilist.svg" alt="AniList" class="h-8 inline-block align-middle ml-1" style="vertical-align: middle;" />
+                                        </p>
+                                        <!-- import anilist svg inline with al -->
+                                         <p class="odinregular text-2xl flex items-center">
+                                            {{ officer.favorite_anime_score_mal }}/10<img src="/media/myanimelist.png" alt="MyAnimeList" class="h-8 inline-block align-middle ml-2" style="vertical-align: middle;" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+<script>
+    $(window).scroll(function () {
+        var topscroll = $(this).scrollTop();
+        var screenheight = $(window).height();
+        var calculate_opacity = 1 - (topscroll / screenheight) > 0.7 ? 1 - (topscroll / screenheight) : 0.7;
+
+        $(".background").css("top", -topscroll / 50);
+        $(".background").css("opacity", calculate_opacity);
+    });
+</script>
+
+</html>

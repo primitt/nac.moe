@@ -23,7 +23,7 @@ async def on_ready():
     await bot.change_presence(activity=nextcord.Game(name="Northwood High School Anime Club"))
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
 
-
+# EVENTS
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def create_event(
     interaction: nextcord.Interaction,
@@ -89,6 +89,9 @@ async def delete_event(
     except events.DoesNotExist:
         await interaction.response.send_message(f"Error: No event found with ID `{event_id}`.", ephemeral=True)
 
+
+
+# NEWS
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def create_news(
     interaction: nextcord.Interaction,
@@ -123,6 +126,9 @@ async def delete_news(
     except news.DoesNotExist:
         await interaction.response.send_message(f"Error: No news found with ID `{news_id}`.", ephemeral=True)
 
+
+
+# SETTINGS
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def get_setting(
     interaction: nextcord.Interaction,
@@ -161,6 +167,10 @@ async def create_setting(
         await interaction.response.send_message(f"Error: Setting with name `{setting_name}` already exists.", ephemeral=True)
         return
     await interaction.response.send_message(f"Setting `{setting.name}` created with value: `{setting.value}`")
+
+
+
+# OFFICERS
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def add_officer(
     interaction: nextcord.Interaction,
@@ -203,7 +213,7 @@ async def add_officer(
             name=name, position=position, bio=bio, pfp=pfp, favorite_anime_enabled=True,
             favorite_anime_name=fav_name, favorite_anime_img=fav_img, favorite_anime_genre=fav_genre,
             favorite_anime_season=fav_season, favorite_anime_bio=fav_bio,
-            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal, favorite_anime_url=fav_url
+            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal, favorite_anime_url_al=fav_url
         )
         await interaction.response.send_message(f"Officer `{name}` created with favorite anime `{fav_name}`!")
     else:
@@ -264,7 +274,7 @@ async def edit_officer(
         officer.favorite_anime_enabled = True
         officer.favorite_anime_name = fav_name
         officer.favorite_anime_img = fav_img
-        officer.favorite_anime_url = fav_url
+        officer.favorite_anime_url_al = fav_url
         officer.favorite_anime_genre = fav_genre
         officer.favorite_anime_season = fav_season
         officer.favorite_anime_bio = fav_bio
@@ -274,7 +284,7 @@ async def edit_officer(
         officer.favorite_anime_enabled = False
         officer.favorite_anime_name = None
         officer.favorite_anime_img = None
-        officer.favorite_anime_url = None
+        officer.favorite_anime_url_al = None
         officer.favorite_anime_genre = None
         officer.favorite_anime_season = None
         officer.favorite_anime_bio = None

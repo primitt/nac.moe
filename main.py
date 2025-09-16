@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_from_directory, redirect
 from datetime import datetime, timedelta
 import json
-from db.db import database, events, news, settings
+from db.db import database, events, news, settings, officers
 
 # TODO: Create a monthly anime recommendations page
 # TODO: Create a meet the board page cal.moe/officers
@@ -101,7 +101,10 @@ def event():
 def news_page():
     all_news = news.select().order_by(news.date.desc())
     return render_template('news.html', all_news=list(all_news))
-
+@app.route('/officers')
+def officers_page():
+    all_officers = officers.select().order_by(officers.id.asc())
+    return render_template('officers.html', officers=list(all_officers))
 if __name__ == '__main__':
     # create base settings if not exist: default_dt, default_loc, default_why, default_what
     for setting in DEFAULTS:
