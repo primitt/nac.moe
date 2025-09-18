@@ -8,17 +8,12 @@
     <link rel="preload" href="./media/Odin-Bold.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="./media/TightSpotBB-BoldItalic.woff" as="font" type="font/woff" crossorigin>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name='og:title' content='Northwood High School Anime Club - News'>
+    <meta name='og:title' content='Northwood High School Anime Club'>
     <meta name='og:type' content='website'>
-    <meta name='og:url' content='https://nac.moe/news'>
+    <meta name='og:url' content='https://nac.moe'>
     <meta name='og:image' content='https://nac.moe/media/lovebulletjoinanimeclub.png'>
     <meta name='og:site_name' content='NAC'>
-    <meta name='og:description' content='Northwood High School Anime Club - News Page - Stay updated with the latest news and announcements from our club.'>
-    <meta name="description" content="Northwood High School Anime Club - News Page - Stay updated with the latest news and announcements from our club.">
-    <meta name="keywords" content="Northwood High School, Anime Club, News, Announcements, NAC, Anime, Manga, Otaku Culture">
-    <meta name="author" content="Northwood High School Anime Club">
-    <meta name="robots" content="index, follow">
-    <meta name="googlebot" content="index, follow">
+    <meta name='og:description' content='Northwood High School Anime Club'>
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=stat_minus_3" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"
@@ -116,36 +111,6 @@
 
 <body>
     <div class="background"></div>
-    <div class="px-5 lg:px-10 pt-5 lg:pt-5 flex flex-col lg:flex-row items-center">
-        <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white min-h-full w-full">
-            <div class="w-full lg:mx-20">
-                <div class="card bg-base-100 min-h-full lg:min-w-full min-w-full mt-5 lg:mt-0">
-                    <div class="card-body">
-                        <h2 class="card-title text-black odinbold text-5xl">News <span
-                                class="text-lg badge badge-soft badge-accent">beta</span></h2>
-                        <div class="divider mt-0 mb-2"></div>
-                        <div
-                            class="overflow-y-scroll h-[80vh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                            {% if all_news|length == 0 %}
-                            <div class="text-center">
-                                <p class="odinregular text-3xl text-black">No news yet...</p>
-                            </div>
-                            {% endif %}
-                            {% for news in all_news %}
-                            <div class="mb-5">
-                                <p class="odinbold text-black text-2xl">{{news.title}}</p>
-                                <p class="odinregular text-black text-lg">{{news.content | safe}}</p>
-                                <p class="text-base text-black text-end">Posted on {{news.date.strftime('%B %d, %Y')}}
-                                    by
-                                    {{news.author}}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </body>
 <script>
     $(window).scroll(function () {
