@@ -14,6 +14,8 @@ from db.db import database, events, news, settings, officers
 # TODO: Change the color of the registration button (?? header has been changed, maybe this isnt needed)
 # TODO: Add a 404 page
 # TODO: CLEAN UP CODE AND PAGES
+# TODO: Add Resources Page - https://anime.mit.edu/resources/ inspired
+# TODO: 
 
 # DEPRECATED
 # def next_first_or_third_tuesday(start_date=None):

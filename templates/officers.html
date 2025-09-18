@@ -160,7 +160,7 @@
                                 <p class="odinlight text-sm">{{ officer.favorite_anime_season }}</p>
                                 <p class="odinregular text-sm">{{ officer.favorite_anime_genre }}</p>
                                 <p class="odinregular text-sm">
-                                    {{ officer.favorite_anime_bio[:120] | safe }}{% if officer.favorite_anime_bio|length
+                                    {{ officer.favorite_anime_bio[:250] | safe }}{% if officer.favorite_anime_bio|length
                                     > 100 %}...<span class="font-bold">(Click the image to view more details)</span>{%
                                     endif %}
                                 </p>
