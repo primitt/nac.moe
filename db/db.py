@@ -35,6 +35,7 @@ class news(BaseModel):
 class officers(BaseModel):
     id = AutoField()
     pfp = TextField()
+    order = IntegerField(null=True)
     name = TextField()
     position = TextField()
     bio = TextField()
@@ -65,8 +66,10 @@ if not database.table_exists('settings'):
     database.create_tables([settings])
 if not database.table_exists('officers'):
     database.create_tables([officers])
-
-    
+# if the col order doesnt exist in officers, add it
+if not officers.table_exists('order'):
+    with database.atomic():
+        database.execute('ALTER TABLE officers ADD COLUMN "order" INTEGER')  
 
 if __name__ == "__main__":
     # migration

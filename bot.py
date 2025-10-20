@@ -177,6 +177,7 @@ async def add_officer(
     name: str = nextcord.SlashOption(name="name", description="Name of the officer", required=True),
     position: str = nextcord.SlashOption(name="position", description="Position of the officer", required=True),
     bio: str = nextcord.SlashOption(name="bio", description="Bio of the officer", required=True),
+    order: int = nextcord.SlashOption(name="order", description="Order of the officer", required=False),
     pfp: Optional[str] = nextcord.SlashOption(name="pfp", description="Profile picture URL of the officer", required=False),
     favorite_anime: Optional[str] = nextcord.SlashOption(name="favorite_anime", description="Favorite anime of the officer (enter AniList URL)", required=False)
 ):
@@ -213,12 +214,12 @@ async def add_officer(
             name=name, position=position, bio=bio, pfp=pfp, favorite_anime_enabled=True,
             favorite_anime_name=fav_name, favorite_anime_img=fav_img, favorite_anime_genre=fav_genre,
             favorite_anime_season=fav_season, favorite_anime_bio=fav_bio,
-            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal, favorite_anime_url_al=fav_url
+            favorite_anime_score_al=fav_score_al, favorite_anime_score_mal=fav_score_mal, favorite_anime_url_al=fav_url, order=order
         )
         await interaction.response.send_message(f"Officer `{name}` created with favorite anime `{fav_name}`!")
     else:
         officers.create(
-            name=name, position=position, bio=bio, pfp=pfp
+            name=name, position=position, bio=bio, pfp=pfp, order=order
         )
         await interaction.response.send_message(f"Officer `{name}` created without a favorite anime!")
 @bot.slash_command(guild_ids=[1342913889544962090])
@@ -230,7 +231,8 @@ async def edit_officer(
     bio: Optional[str] = nextcord.SlashOption(name="bio", description="Bio of the officer", required=False),
     pfp: Optional[str] = nextcord.SlashOption(name="pfp", description="Profile picture URL of the officer", required=False),
     favorite_anime: Optional[str] = nextcord.SlashOption(name="favorite_anime", description="Favorite anime of the officer (enter AniList URL)", required=False),
-    disable_favorite_anime: Optional[bool] = nextcord.SlashOption(name="disable_favorite_anime", description="Disable favorite anime section", required=False, default=False)
+    disable_favorite_anime: Optional[bool] = nextcord.SlashOption(name="disable_favorite_anime", description="Disable favorite anime section", required=False, default=False),
+    order: Optional[int] = nextcord.SlashOption(name="order", description="Order of the officer", required=False)
 ):
     try:
         officer = officers.get(officers.id == officer_id)
@@ -280,6 +282,7 @@ async def edit_officer(
         officer.favorite_anime_bio = fav_bio
         officer.favorite_anime_score_al = fav_score_al
         officer.favorite_anime_score_mal = fav_score_mal
+        officer.order = order if order is not None else officer.order
     if disable_favorite_anime:
         officer.favorite_anime_enabled = False
         officer.favorite_anime_name = None
@@ -290,15 +293,16 @@ async def edit_officer(
         officer.favorite_anime_bio = None
         officer.favorite_anime_score_al = None
         officer.favorite_anime_score_mal = None
+        officer.order = order if order is not None else officer.order
     await interaction.response.send_message(f"Officer `{officer.name}` with id `{officer.id}` updated!")
     officer.save()
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def all_officers(interaction: nextcord.Interaction):
     all_officers = officers.select()
     officer_list = []
-    officer_list.append("```Officers (Name, Position, Bio, Favorite Anime Enabled, Favorite Anime Name, Favorite Anime Genre, Favorite Anime Season, Favorite Anime Score AniList, Favorite Anime Score MyAnimeList):")
+    officer_list.append("```Officers (Name, Position, Bio, Favorite Anime Enabled, Favorite Anime Name, Favorite Anime Genre, Favorite Anime Season, Favorite Anime Score AniList, Favorite Anime Score MyAnimeList), Order:")
     for officer in all_officers:
-        officer_list.append(f"(ID) {officer.id}. {officer.name} - {officer.position} - {officer.bio} - {officer.favorite_anime_enabled} - {officer.favorite_anime_name} - {officer.favorite_anime_genre} - {officer.favorite_anime_season} - {officer.favorite_anime_score_al} - {officer.favorite_anime_score_mal}")
+        officer_list.append(f"(ID) {officer.id}. {officer.name} - {officer.position} - {officer.bio} - {officer.favorite_anime_enabled} - {officer.favorite_anime_name} - {officer.favorite_anime_genre} - {officer.favorite_anime_season} - {officer.favorite_anime_score_al} - {officer.favorite_anime_score_mal} - {officer.order}")
         officer_list.append("\n")
     officer_list.append("```")
     await interaction.response.send_message("\n".join(officer_list))

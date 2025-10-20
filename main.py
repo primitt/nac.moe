@@ -109,8 +109,12 @@ def news_page():
     return render_template('news.html', all_news=list(all_news))
 @app.route('/officers')
 def officers_page():
-    all_officers = officers.select().order_by(officers.id.asc())
+    all_officers = officers.select().order_by(officers.order.asc())
     return render_template('officers.html', officers=list(all_officers))
+
+@app.route("/resources")
+def resources():
+    return render_template("resources.html")
 if __name__ == '__main__':
     # create base settings if not exist: default_dt, default_loc, default_why, default_what
     for setting in DEFAULTS:
