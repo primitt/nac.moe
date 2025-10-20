@@ -247,6 +247,8 @@ async def edit_officer(
         officer.bio = bio
     if pfp:
         officer.pfp = pfp
+    if order:
+        officer.order = order
     if favorite_anime:
         try:
             if "anilist.co/anime/" in favorite_anime:
@@ -282,7 +284,6 @@ async def edit_officer(
         officer.favorite_anime_bio = fav_bio
         officer.favorite_anime_score_al = fav_score_al
         officer.favorite_anime_score_mal = fav_score_mal
-        officer.order = order if order is not None else officer.order
     if disable_favorite_anime:
         officer.favorite_anime_enabled = False
         officer.favorite_anime_name = None
@@ -293,7 +294,6 @@ async def edit_officer(
         officer.favorite_anime_bio = None
         officer.favorite_anime_score_al = None
         officer.favorite_anime_score_mal = None
-        officer.order = order if order is not None else officer.order
     await interaction.response.send_message(f"Officer `{officer.name}` with id `{officer.id}` updated!")
     officer.save()
 @bot.slash_command(guild_ids=[1342913889544962090])
