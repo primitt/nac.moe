@@ -305,7 +305,12 @@ async def all_officers(interaction: nextcord.Interaction):
         officer_list.append(f"(ID) {officer.id}. {officer.name} - {officer.position} - {officer.bio} - {officer.favorite_anime_enabled} - {officer.favorite_anime_name} - {officer.favorite_anime_genre} - {officer.favorite_anime_season} - {officer.favorite_anime_score_al} - {officer.favorite_anime_score_mal} - {officer.order}")
         officer_list.append("\n")
     officer_list.append("```")
-    await interaction.response.send_message("\n".join(officer_list))
+    # if the message is longer than 2000 characters, split it into multiple messages
+    if len("\n".join(officer_list)) > 2000:
+        for i in range(0, len(officer_list), 2000):
+            await interaction.response.send_message("\n".join(officer_list[i:i+2000]))
+    else:
+        await interaction.response.send_message("\n".join(officer_list))
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def delete_officer(
     interaction: nextcord.Interaction,
