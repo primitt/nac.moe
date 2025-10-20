@@ -154,7 +154,7 @@
                     {% if officer.favorite_anime_enabled %}
                     <div>
                         <h2 class="card-title odinbold text-2xl mb-5">Favorite Anime</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <a href="{{ officer.favorite_anime_url_al}}"><img src="{{ officer.favorite_anime_img }}"
                                         alt="Favorite Anime Image" class="w-32 h-auto" /></a>
@@ -164,7 +164,7 @@
                                 <p class="odinlight text-sm">{{ officer.favorite_anime_season }}</p>
                                 <p class="odinregular text-sm">{{ officer.favorite_anime_genre }}</p>
                                 <p class="odinregular text-sm">
-                                    {{ officer.favorite_anime_bio[:250] | safe }}{% if officer.favorite_anime_bio|length
+                                    {{ officer.favorite_anime_bio[:300] | safe }}{% if officer.favorite_anime_bio|length
                                     > 100 %}...<span class="font-bold">(Click the image to view more details)</span>{%
                                     endif %}
                                 </p>
