@@ -305,12 +305,31 @@ async def all_officers(interaction: nextcord.Interaction):
         officer_list.append(f"(ID) {officer.id}. {officer.name} - {officer.position} - {officer.bio} - {officer.favorite_anime_enabled} - {officer.favorite_anime_name} - {officer.favorite_anime_genre} - {officer.favorite_anime_season} - {officer.favorite_anime_score_al} - {officer.favorite_anime_score_mal} - {officer.order}")
         officer_list.append("\n")
     officer_list.append("```")
-    # if the message is longer than 2000 characters, split it into multiple messages
-    if len("\n".join(officer_list)) > 2000:
-        for i in range(0, len(officer_list), 2000):
-            await interaction.response.send_message("\n".join(officer_list[i:i+2000]))
+    full_message = "\n".join(officer_list)
+    if len(full_message) > 2000:
+        chunks = []
+        current_chunk = []
+        current_length = 0
+        
+        for line in officer_list:
+            line_length = len(line) + 1 
+            if current_length + line_length > 2000 and current_chunk:
+                chunks.append("\n".join(current_chunk))
+                current_chunk = [line]
+                current_length = line_length
+            else:
+                current_chunk.append(line)
+                current_length += line_length
+        
+        if current_chunk:
+            chunks.append("\n".join(current_chunk))
+        
+
+        await interaction.response.send_message(chunks[0])
+        for chunk in chunks[1:]:
+            await interaction.followup.send(chunk)
     else:
-        await interaction.response.send_message("\n".join(officer_list))
+        await interaction.response.send_message(full_message)
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def delete_officer(
     interaction: nextcord.Interaction,
