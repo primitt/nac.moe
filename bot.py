@@ -308,20 +308,24 @@ async def all_officers(interaction: nextcord.Interaction):
     full_message = "\n".join(officer_list)
     if len(full_message) > 2000:
         chunks = []
-        current_chunk = []
-        current_length = 0
+        current_chunk = ["```Officers (Name, Position, Bio, Favorite Anime Enabled, Favorite Anime Name, Favorite Anime Genre, Favorite Anime Season, Favorite Anime Score AniList, Favorite Anime Score MyAnimeList), Order:"]
+        current_length = len(current_chunk[0]) + 1  # +1 for newline
         
-        for line in officer_list:
-            line_length = len(line) + 1 
-            if current_length + line_length > 2000 and current_chunk:
+        # Skip the header and closing ``` from officer_list since we handle them separately
+        for line in officer_list[1:-1]:  # Skip first (header) and last (```) lines
+            line_length = len(line) + 1  # +1 for newline
+            # Reserve space for closing ``` (4 characters including newline)
+            if current_length + line_length + 4 > 2000 and len(current_chunk) > 1:
+                current_chunk.append("```")
                 chunks.append("\n".join(current_chunk))
-                current_chunk = [line]
-                current_length = line_length
+                current_chunk = ["```Officers (continued):", line]
+                current_length = len("```Officers (continued):") + 1 + line_length
             else:
                 current_chunk.append(line)
                 current_length += line_length
         
         if current_chunk:
+            current_chunk.append("```")
             chunks.append("\n".join(current_chunk))
         
 
