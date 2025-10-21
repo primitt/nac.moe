@@ -185,13 +185,39 @@
     </div>
 </body>
 <script>
-    $(window).scroll(function () {
-        var topscroll = $(this).scrollTop();
-        var screenheight = $(window).height();
-        var calculate_opacity = 1 - (topscroll / screenheight) > 0.7 ? 1 - (topscroll / screenheight) : 0.7;
+    $(function () {
+        var $bg = $(".background");
+        var bgEl = $bg[0];
+        var computed = window.getComputedStyle(bgEl);
+        var baseTop = parseFloat(computed.top) || 0;
+        var opacityStr = (computed.opacity || "").toString().trim();
+        var initialOpacity = parseFloat(opacityStr);
+        if (isNaN(initialOpacity)) initialOpacity = 1;
+        if (opacityStr.endsWith("%")) initialOpacity = initialOpacity / 100;
+        if (initialOpacity > 1) initialOpacity = initialOpacity / 100;
+        var minOpacity = Math.min(0.7, initialOpacity);
+        $bg.css("transition", "top 220ms linear, opacity 200ms linear");
 
-        $(".background").css("top", -topscroll / 50);
-        $(".background").css("opacity", calculate_opacity);
+        $(window).on("scroll resize", function () {
+            var topscroll = $(this).scrollTop() || 0;
+            var screenheight = $(window).height() || 1;
+            var targetTop = baseTop - (topscroll / 50);
+            var opacityCalc = 1 - (topscroll / screenheight);
+            var targetOpacity = Math.max(minOpacity, opacityCalc);
+            targetOpacity = Math.min(initialOpacity, targetOpacity);
+            var currentTop = parseFloat($bg.css("top")) || baseTop;
+            var currentOpacity = parseFloat($bg.css("opacity"));
+            if (isNaN(currentOpacity)) currentOpacity = initialOpacity;
+
+            if (Math.abs(targetTop - currentTop) < 0.5 && Math.abs(targetOpacity - currentOpacity) < 0.01) {
+                return;
+            }
+
+            $bg.css({
+                top: targetTop + "px",
+                opacity: targetOpacity
+            });
+        }).trigger("resize");
     });
 </script>
 
