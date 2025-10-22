@@ -108,8 +108,7 @@
     }
 </style>
 <header>
-    {% include 'skel.html' %}
-    {% block header %}{% endblock %}
+    {% include 'header.html' %}
 </header>
 
 <body>
@@ -188,6 +187,7 @@
             {% endfor %}
         </div>
     </div>
+    {% include 'footer.html' %}
 </body>
 <script>
     $(function () {
