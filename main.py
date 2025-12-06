@@ -54,7 +54,8 @@ def is_valid_short_name(name):
     """Validate short link name to prevent directory traversal and injection attacks."""
     if not name:
         return False
-    if os.path.sep in name:
+    # Check for path separators (both Unix and Windows)
+    if os.path.sep in name or '/' in name or '\\' in name:
         return False
     if name.startswith('.'):
         return False
@@ -95,7 +96,8 @@ def index():
     return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news), site_vars=site_vars)
 @app.route('/media/<path:path>')
 def media(path):
-    # Flask's path converter and send_from_directory provide built-in path traversal protection
+    # send_from_directory validates that the resolved path is within the specified directory,
+    # providing built-in protection against directory traversal attacks
     return send_from_directory('media', path)
 @app.route('/short/<name>')
 def short(name):
