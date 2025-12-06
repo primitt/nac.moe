@@ -48,6 +48,21 @@ registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3g
 app = Flask(__name__)
 
 DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
+SHORT_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'short.json')
+
+def is_valid_short_name(name):
+    """Validate short link name to prevent directory traversal and injection attacks."""
+    if not name:
+        return False
+    if os.path.sep in name:
+        return False
+    if name.startswith('.'):
+        return False
+    if '..' in name:
+        return False
+    if '\x00' in name:  # Null byte injection
+        return False
+    return True
 
 # Security headers
 @app.after_request
@@ -80,22 +95,16 @@ def index():
     return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news), site_vars=site_vars)
 @app.route('/media/<path:path>')
 def media(path):
-    # Prevent path traversal attacks
+    # Flask's path converter and send_from_directory provide built-in path traversal protection
     return send_from_directory('media', path)
 @app.route('/short/<name>')
 def short(name):
-    # Sanitize name parameter to prevent directory traversal
-    # Check for path separators, parent directory references, null bytes, and dots
-    if (not name or 
-        os.path.sep in name or 
-        name.startswith('.') or 
-        '..' in name or 
-        '\x00' in name):
+    # Validate short link name to prevent security issues
+    if not is_valid_short_name(name):
         return "Invalid short link", 400
     
     try:
-        json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'short.json')
-        with open(json_path, 'r') as f:
+        with open(SHORT_JSON_PATH, 'r') as f:
             json_file = json.load(f)
         if name.lower() in json_file:
             return redirect(json_file[name.lower()]['url'])
