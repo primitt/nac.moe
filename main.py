@@ -1,6 +1,7 @@
-from flask import Flask, render_template, send_from_directory, redirect
+from flask import Flask, render_template, send_from_directory, redirect, request
 from datetime import datetime, timedelta
 import json
+import os
 from db.db import database, events, news, settings, officers
 
 # TODO: Create a monthly anime recommendations page
@@ -53,8 +54,9 @@ DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
 def set_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    # Only set HSTS when using HTTPS
+    if request.is_secure:
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
 
 @app.route('/reg')
@@ -83,7 +85,6 @@ def media(path):
 @app.route('/short/<name>')
 def short(name):
     # Sanitize name parameter to prevent directory traversal
-    import os
     if not name or os.path.sep in name or name.startswith('.'):
         return "Invalid short link", 400
     
