@@ -85,17 +85,29 @@ def media(path):
 @app.route('/short/<name>')
 def short(name):
     # Sanitize name parameter to prevent directory traversal
-    if not name or os.path.sep in name or name.startswith('.'):
+    # Check for path separators, parent directory references, null bytes, and dots
+    if (not name or 
+        os.path.sep in name or 
+        name.startswith('.') or 
+        '..' in name or 
+        '\x00' in name):
         return "Invalid short link", 400
     
     try:
-        with open('short.json', 'r') as f:
+        json_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'short.json')
+        with open(json_path, 'r') as f:
             json_file = json.load(f)
         if name.lower() in json_file:
             return redirect(json_file[name.lower()]['url'])
         return "Short link not found", 404
-    except (IOError, json.JSONDecodeError):
-        return "Error loading short links", 500
+    except IOError as e:
+        # Log error for debugging but don't expose details to user
+        app.logger.error(f"Error reading short.json: {e}")
+        return "Error accessing short links", 500
+    except json.JSONDecodeError as e:
+        # Log error for debugging but don't expose details to user
+        app.logger.error(f"Error parsing short.json: {e}")
+        return "Error parsing short links", 500
 @app.route('/events')
 def event():
     even = events.select()
