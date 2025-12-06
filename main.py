@@ -1,6 +1,7 @@
-from flask import Flask, render_template, send_from_directory, redirect
+from flask import Flask, render_template, send_from_directory, redirect, request
 from datetime import datetime, timedelta
 import json
+import os
 from db.db import database, events, news, settings, officers
 
 # TODO: Create a monthly anime recommendations page
@@ -47,6 +48,32 @@ registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3g
 app = Flask(__name__)
 
 DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
+SHORT_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'short.json')
+
+def is_valid_short_name(name):
+    """Validate short link name to prevent directory traversal and injection attacks."""
+    if not name:
+        return False
+    # Check for path separators (both Unix and Windows)
+    if os.path.sep in name or '/' in name or '\\' in name:
+        return False
+    if name.startswith('.'):
+        return False
+    if '..' in name:
+        return False
+    if '\x00' in name:  # Null byte injection
+        return False
+    return True
+
+# Security headers
+@app.after_request
+def set_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    # Only set HSTS when using HTTPS
+    if request.is_secure:
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
 
 @app.route('/reg')
 def reg():
@@ -67,15 +94,31 @@ def index():
         site_vars[setting.name] = setting.value
     site_vars = type('obj', (object,), site_vars)
     return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news), site_vars=site_vars)
-@app.route('/media/<path>')
+@app.route('/media/<path:path>')
 def media(path):
+    # send_from_directory validates that the resolved path is within the specified directory,
+    # providing built-in protection against directory traversal attacks
     return send_from_directory('media', path)
 @app.route('/short/<name>')
 def short(name):
-    json_file = json.load(open('short.json'))
-    if name.lower() in json_file:
-        return redirect(json_file[name.lower()]['url'])
-    return "Short link not found", 404
+    # Validate short link name to prevent security issues
+    if not is_valid_short_name(name):
+        return "Invalid short link", 400
+    
+    try:
+        with open(SHORT_JSON_PATH, 'r') as f:
+            json_file = json.load(f)
+        if name.lower() in json_file:
+            return redirect(json_file[name.lower()]['url'])
+        return "Short link not found", 404
+    except IOError as e:
+        # Log error for debugging but don't expose details to user
+        app.logger.error(f"Error reading short.json: {e}")
+        return "Error accessing short links", 500
+    except json.JSONDecodeError as e:
+        # Log error for debugging but don't expose details to user
+        app.logger.error(f"Error parsing short.json: {e}")
+        return "Error parsing short links", 500
 @app.route('/events')
 def event():
     even = events.select()
@@ -121,4 +164,6 @@ if __name__ == '__main__':
         if not settings.get_or_none(name=setting):
             settings.create(name=setting, value="TBD")
 
-    app.run(debug=True)
+    # SECURITY: Debug mode should NEVER be enabled in production
+    # Set debug=False for production deployments
+    app.run(debug=False)
