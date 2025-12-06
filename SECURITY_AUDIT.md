@@ -2,13 +2,15 @@
 
 **Date:** December 6, 2025  
 **Auditor:** GitHub Copilot Security Agent  
-**Status:** ✅ All Critical and High Vulnerabilities Fixed
+**Status:** ⚠️ 6/7 Vulnerabilities Fixed (1 XSS vulnerability remains per user request)
 
 ## Executive Summary
 
-A comprehensive security audit was performed on the nac.moe codebase, identifying and fixing **7 critical/high severity vulnerabilities** and implementing **6 security enhancements**. All identified issues have been resolved, and the codebase now follows security best practices.
+A comprehensive security audit was performed on the nac.moe codebase, identifying **7 critical/high severity vulnerabilities**. **6 vulnerabilities have been fixed**, and **1 XSS vulnerability remains per user request** (required for admin platform functionality).
 
 **CodeQL Analysis Result:** ✅ 0 alerts found
+
+**⚠️ Important Note:** The `| safe` filter for rendering news content and officer bios has been restored per user request as it's required for their admin platform. This presents a stored XSS risk if unauthorized users gain access to the Discord bot. See mitigation recommendations in the XSS section below.
 
 ---
 
@@ -26,11 +28,17 @@ A comprehensive security audit was performed on the nac.moe codebase, identifyin
 - Potential for session hijacking, credential theft, or defacement
 
 **Fix Applied:**
-- Removed `| safe` filters from all templates (lines: index.html:301, news.html:136, officers.html:166)
-- Flask's default auto-escaping now properly sanitizes all user content
-- All HTML special characters are now escaped before rendering
+- ⚠️ **REVERTED PER USER REQUEST** - The `| safe` filters have been restored as they are required for the admin platform
+- The `| safe` filter remains in use at: index.html:301, news.html:136, officers.html:166
+- **SECURITY RISK**: Content added through the Discord bot is trusted and assumed to be from authorized admins only
 
-**Verification:** ✅ Tested with sample XSS payloads - all properly escaped
+**Mitigation Recommendations:**
+- Ensure only trusted administrators have access to Discord bot commands that create news/officer content
+- Implement content sanitization at the input level (in Discord bot) before storing in database
+- Consider using a library like `bleach` to allow only safe HTML tags
+- Regularly audit content for malicious scripts
+
+**Status:** ⚠️ **VULNERABILITY REMAINS** - User accepted risk for admin platform functionality
 
 ---
 
@@ -261,7 +269,7 @@ While all identified vulnerabilities have been fixed, the following security enh
 ✅ **OWASP Top 10 2021**
 - A01:2021 – Broken Access Control: ✅ Fixed (path traversal)
 - A02:2021 – Cryptographic Failures: N/A (no sensitive data storage)
-- A03:2021 – Injection: ✅ Fixed (XSS, path traversal)
+- A03:2021 – Injection: ⚠️ Partially Fixed (path traversal fixed, XSS remains per user request)
 - A04:2021 – Insecure Design: ✅ Improved (error handling, timeouts)
 - A05:2021 – Security Misconfiguration: ✅ Fixed (debug mode, headers)
 - A06:2021 – Vulnerable Components: ⚠️ Not scanned (no requirements.txt)
@@ -274,18 +282,22 @@ While all identified vulnerabilities have been fixed, the following security enh
 
 ## Conclusion
 
-All identified security vulnerabilities have been successfully remediated. The application now follows security best practices for:
+Most identified security vulnerabilities have been successfully remediated. The application now follows security best practices for:
 - Input validation
-- Output encoding
 - Error handling
 - HTTP security headers
 - API resilience
 - Configuration security
 
-**Risk Level Before Audit:** 🔴 High (Critical XSS and Path Traversal vulnerabilities)  
-**Risk Level After Fixes:** 🟢 Low (Standard web application security posture)
+**⚠️ Important:** The XSS vulnerability via `| safe` filter remains by user request, as it's required for admin platform functionality. This is an accepted risk with the understanding that:
+1. Only trusted administrators should have Discord bot access
+2. Content should be reviewed before publication
+3. Consider implementing input sanitization in the Discord bot
 
-**Recommendation:** Deploy changes to production immediately to protect against identified vulnerabilities.
+**Risk Level Before Audit:** 🔴 High (Critical XSS and Path Traversal vulnerabilities)  
+**Risk Level After Fixes:** 🟡 Medium (Path traversal fixed, XSS remains per user request)
+
+**Recommendation:** Deploy other security fixes while implementing additional controls around Discord bot access and content review processes.
 
 ---
 
@@ -293,11 +305,11 @@ All identified security vulnerabilities have been successfully remediated. The a
 
 1. `main.py` - Security fixes and headers
 2. `bot.py` - API timeout protection
-3. `templates/index.html` - XSS fix
-4. `templates/news.html` - XSS fix
-5. `templates/officers.html` - XSS fix
+3. `templates/index.html` - ⚠️ XSS fix reverted per user request (| safe restored)
+4. `templates/news.html` - ⚠️ XSS fix reverted per user request (| safe restored)
+5. `templates/officers.html` - ⚠️ XSS fix reverted per user request (| safe restored)
 
-**Total Lines Changed:** ~50 lines across 5 files  
+**Total Lines Changed:** ~50 lines across 5 files (templates reverted to original)  
 **Breaking Changes:** None  
 **Performance Impact:** Negligible (added timeouts are network-bound)
 
