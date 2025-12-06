@@ -202,11 +202,18 @@ async def add_officer(
             fav_score_al = str(ani_data['average_score']) if 'average_score' in ani_data else "N/A"
             fav_score_mal = "N/A"
             # call mal api to get the score https://api.jikan.moe/v4/anime?q={query name here}&limit=1
-            mal_response = requests.get(f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1")
-            if mal_response.status_code == 200:
-                mal_data = mal_response.json()
-                if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
-                    fav_score_mal = str(mal_data['data'][0]['score'])
+            try:
+                mal_response = requests.get(
+                    f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1",
+                    timeout=10
+                )
+                if mal_response.status_code == 200:
+                    mal_data = mal_response.json()
+                    if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
+                        fav_score_mal = str(mal_data['data'][0]['score'])
+            except requests.exceptions.RequestException:
+                # If MAL API fails, continue with N/A
+                pass
         except Exception as e:
             await interaction.response.send_message(f"Error: Could not fetch anime/manga data. {str(e)}", ephemeral=True)
             return
@@ -267,11 +274,18 @@ async def edit_officer(
             fav_score_al = str(ani_data['average_score']) if 'average_score' in ani_data else "N/A"
             fav_score_mal = "N/A"
             # call mal api to get the score https://api.jikan.moe/v4/anime?q={query name here}&limit=1
-            mal_response = requests.get(f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1")
-            if mal_response.status_code == 200:
-                mal_data = mal_response.json()
-                if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
-                    fav_score_mal = str(mal_data['data'][0]['score'])
+            try:
+                mal_response = requests.get(
+                    f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1",
+                    timeout=10
+                )
+                if mal_response.status_code == 200:
+                    mal_data = mal_response.json()
+                    if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
+                        fav_score_mal = str(mal_data['data'][0]['score'])
+            except requests.exceptions.RequestException:
+                # If MAL API fails, continue with N/A
+                pass
         except Exception as e:
             await interaction.response.send_message(f"Error: Could not fetch anime/manga data. {str(e)}", ephemeral=True)
             return

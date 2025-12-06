@@ -133,7 +133,7 @@
                             {% for news in all_news %}
                             <div class="mb-5">
                                 <p class="odinbold text-black text-2xl">{{news.title}}</p>
-                                <p class="odinregular text-black text-lg">{{news.content | safe}}</p>
+                                <p class="odinregular text-black text-lg">{{news.content}}</p>
                                 <p class="text-base text-black text-end">Posted on {{news.date.strftime('%B %d, %Y')}}
                                     by
                                     {{news.author}}</p>

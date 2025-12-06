@@ -48,6 +48,15 @@ app = Flask(__name__)
 
 DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
 
+# Security headers
+@app.after_request
+def set_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
+
 @app.route('/reg')
 def reg():
     return redirect(registration_form)
@@ -67,15 +76,25 @@ def index():
         site_vars[setting.name] = setting.value
     site_vars = type('obj', (object,), site_vars)
     return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news), site_vars=site_vars)
-@app.route('/media/<path>')
+@app.route('/media/<path:path>')
 def media(path):
+    # Prevent path traversal attacks
     return send_from_directory('media', path)
 @app.route('/short/<name>')
 def short(name):
-    json_file = json.load(open('short.json'))
-    if name.lower() in json_file:
-        return redirect(json_file[name.lower()]['url'])
-    return "Short link not found", 404
+    # Sanitize name parameter to prevent directory traversal
+    import os
+    if not name or os.path.sep in name or name.startswith('.'):
+        return "Invalid short link", 400
+    
+    try:
+        with open('short.json', 'r') as f:
+            json_file = json.load(f)
+        if name.lower() in json_file:
+            return redirect(json_file[name.lower()]['url'])
+        return "Short link not found", 404
+    except (IOError, json.JSONDecodeError):
+        return "Error loading short links", 500
 @app.route('/events')
 def event():
     even = events.select()
@@ -121,4 +140,6 @@ if __name__ == '__main__':
         if not settings.get_or_none(name=setting):
             settings.create(name=setting, value="TBD")
 
-    app.run(debug=True)
+    # SECURITY: Debug mode should NEVER be enabled in production
+    # Set debug=False for production deployments
+    app.run(debug=False)
