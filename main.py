@@ -166,4 +166,4 @@ if __name__ == '__main__':
 
     # SECURITY: Debug mode should NEVER be enabled in production
     # Set debug=False for production deployments
-    app.run(debug=False)
+    app.run(debug=True)
