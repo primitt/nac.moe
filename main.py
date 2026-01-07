@@ -13,9 +13,7 @@ from db.db import database, events, news, settings, officers
 # TODO: Add contact information and proper, nice footer
 # TODO: About Page
 # TODO: Change the color of the registration button (?? header has been changed, maybe this isnt needed)
-# TODO: Add a 404 page
 # TODO: CLEAN UP CODE AND PAGES
-# TODO: Add Resources Page - https://anime.mit.edu/resources/ inspired
 # TODO: 
 
 # DEPRECATED
@@ -158,6 +156,11 @@ def officers_page():
 @app.route("/resources")
 def resources():
     return render_template("resources.html")
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 if __name__ == '__main__':
     # create base settings if not exist: default_dt, default_loc, default_why, default_what
     for setting in DEFAULTS:
