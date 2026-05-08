@@ -48,6 +48,8 @@ class officers(BaseModel):
     favorite_anime_score_al = TextField(null=True)
     favorite_anime_score_mal = TextField(null=True)
     favorite_anime_url_al = TextField(null=True)
+    current = BooleanField(default=True)
+    year = IntegerField(null=True)
     class Meta:
         table_name = 'officers'
 
@@ -70,4 +72,7 @@ if not database.table_exists('officers'):
 if __name__ == "__main__":
     # migration
     migrator = SqliteMigrator(database)
-    
+    migrate(
+        migrator.add_column('officers', 'current', BooleanField(default=True)),
+        migrator.add_column('officers', 'year', IntegerField(null=True)),
+    )

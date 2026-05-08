@@ -14,7 +14,7 @@ from db.db import database, events, news, settings, officers
 # TODO: About Page
 # TODO: Change the color of the registration button (?? header has been changed, maybe this isnt needed)
 # TODO: CLEAN UP CODE AND PAGES
-# TODO: 
+# TODO: CREATE Past Officer Page
 
 # DEPRECATED
 # def next_first_or_third_tuesday(start_date=None):
@@ -152,6 +152,10 @@ def news_page():
 def officers_page():
     all_officers = officers.select().order_by(officers.order.asc())
     return render_template('officers.html', officers=list(all_officers))
+
+@app.route('/officers/past')
+def past_officers_page():
+    return render_template('past_officers.html', officers=list(officers.select()))
 
 @app.route("/resources")
 def resources():

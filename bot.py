@@ -239,7 +239,9 @@ async def edit_officer(
     pfp: Optional[str] = nextcord.SlashOption(name="pfp", description="Profile picture URL of the officer", required=False),
     favorite_anime: Optional[str] = nextcord.SlashOption(name="favorite_anime", description="Favorite anime of the officer (enter AniList URL)", required=False),
     disable_favorite_anime: Optional[bool] = nextcord.SlashOption(name="disable_favorite_anime", description="Disable favorite anime section", required=False, default=False),
-    order: Optional[int] = nextcord.SlashOption(name="order", description="Order of the officer", required=False)
+    order: Optional[int] = nextcord.SlashOption(name="order", description="Order of the officer", required=False),
+    current: Optional[bool] = nextcord.SlashOption(name="current", description="Is this officer a current staff member?", required=False),
+    year: Optional[int] = nextcord.SlashOption(name="year", description="Year for past staff (e.g. 2024)", required=False)
 ):
     try:
         officer = officers.get(officers.id == officer_id)
@@ -273,7 +275,6 @@ async def edit_officer(
             fav_bio = ani_data['desc'] if 'desc' in ani_data else "N/A"
             fav_score_al = str(ani_data['average_score']) if 'average_score' in ani_data else "N/A"
             fav_score_mal = "N/A"
-            # call mal api to get the score https://api.jikan.moe/v4/anime?q={query name here}&limit=1
             try:
                 mal_response = requests.get(
                     f"https://api.jikan.moe/v4/anime?q={ani_data['name_romaji']}&limit=1",
@@ -284,7 +285,6 @@ async def edit_officer(
                     if 'data' in mal_data and len(mal_data['data']) > 0 and 'score' in mal_data['data'][0]:
                         fav_score_mal = str(mal_data['data'][0]['score'])
             except requests.exceptions.RequestException:
-                # If MAL API fails, continue with N/A
                 pass
         except Exception as e:
             await interaction.response.send_message(f"Error: Could not fetch anime/manga data. {str(e)}", ephemeral=True)
@@ -308,14 +308,19 @@ async def edit_officer(
         officer.favorite_anime_bio = None
         officer.favorite_anime_score_al = None
         officer.favorite_anime_score_mal = None
+    if current is not None:
+        officer.current = current
+    if year is not None:
+        officer.year = year
     await interaction.response.send_message(f"Officer `{officer.name}` with id `{officer.id}` updated!")
     officer.save()
+
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def all_officers(interaction: nextcord.Interaction):
-    all_officers = officers.select()
+    all_officers_q = officers.select().where(officers.current == True)
     officer_list = []
     officer_list.append("```Officers (Name, Position, Bio, Favorite Anime Enabled, Favorite Anime Name, Favorite Anime Genre, Favorite Anime Season, Favorite Anime Score AniList, Favorite Anime Score MyAnimeList), Order:")
-    for officer in all_officers:
+    for officer in all_officers_q:
         officer_list.append(f"(ID) {officer.id}. {officer.name} - {officer.position} - {officer.bio} - {officer.favorite_anime_enabled} - {officer.favorite_anime_name} - {officer.favorite_anime_genre} - {officer.favorite_anime_season} - {officer.favorite_anime_score_al} - {officer.favorite_anime_score_mal} - {officer.order}")
         officer_list.append("\n")
     officer_list.append("```")
@@ -323,12 +328,9 @@ async def all_officers(interaction: nextcord.Interaction):
     if len(full_message) > 2000:
         chunks = []
         current_chunk = ["```Officers (Name, Position, Bio, Favorite Anime Enabled, Favorite Anime Name, Favorite Anime Genre, Favorite Anime Season, Favorite Anime Score AniList, Favorite Anime Score MyAnimeList), Order:"]
-        current_length = len(current_chunk[0]) + 1  # +1 for newline
-        
-        # Skip the header and closing ``` from officer_list since we handle them separately
-        for line in officer_list[1:-1]:  # Skip first (header) and last (```) lines
-            line_length = len(line) + 1  # +1 for newline
-            # Reserve space for closing ``` (4 characters including newline)
+        current_length = len(current_chunk[0]) + 1
+        for line in officer_list[1:-1]:
+            line_length = len(line) + 1
             if current_length + line_length + 4 > 2000 and len(current_chunk) > 1:
                 current_chunk.append("```")
                 chunks.append("\n".join(current_chunk))
@@ -337,17 +339,53 @@ async def all_officers(interaction: nextcord.Interaction):
             else:
                 current_chunk.append(line)
                 current_length += line_length
-        
         if current_chunk:
             current_chunk.append("```")
             chunks.append("\n".join(current_chunk))
-        
-
         await interaction.response.send_message(chunks[0])
         for chunk in chunks[1:]:
             await interaction.followup.send(chunk)
     else:
         await interaction.response.send_message(full_message)
+
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def move_officers_to_archive(
+    interaction: nextcord.Interaction,
+    year: int = nextcord.SlashOption(name="year", description="Year to archive current officers into", required=True)
+):
+    try:
+        updated = officers.update({officers.current: False, officers.year: year}).where(officers.current == True).execute()
+        await interaction.response.send_message(f"Archived {updated} officers into year {year}.")
+    except Exception as e:
+        await interaction.response.send_message(f"Error archiving officers: {e}", ephemeral=True)
+
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def get_past_officer(
+    interaction: nextcord.Interaction,
+    officer_id: Optional[int] = nextcord.SlashOption(name="id", description="ID of the past officer", required=False),
+    name: Optional[str] = nextcord.SlashOption(name="name", description="Name of the past officer (exact match)", required=False)
+):
+    if not officer_id and not name:
+        await interaction.response.send_message("Provide either `id` or `name` to lookup a past officer.", ephemeral=True)
+        return
+    try:
+        if officer_id:
+            o = officers.get((officers.id == officer_id) & (officers.current == False))
+            await interaction.response.send_message(f"(ID) {o.id}. {o.name} - {o.position} - Year: {o.year} - Bio: {o.bio}")
+            return
+        if name:
+            q = officers.select().where((officers.name == name) & (officers.current == False))
+            results = list(q)
+            if not results:
+                await interaction.response.send_message(f"No past officer found with name `{name}`.", ephemeral=True)
+                return
+            lines = []
+            for o in results:
+                lines.append(f"(ID) {o.id}. {o.name} - {o.position} - Year: {o.year} - Bio: {o.bio}")
+            await interaction.response.send_message("\n".join(lines))
+    except officers.DoesNotExist:
+        await interaction.response.send_message(f"No past officer found with ID `{officer_id}`.", ephemeral=True)
+
 @bot.slash_command(guild_ids=[1342913889544962090])
 async def delete_officer(
     interaction: nextcord.Interaction,
