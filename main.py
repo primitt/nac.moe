@@ -150,8 +150,9 @@ def news_page():
     return render_template('news.html', all_news=list(all_news))
 @app.route('/officers')
 def officers_page():
-    all_officers = officers.select().order_by(officers.order.asc())
-    return render_template('officers.html', officers=list(all_officers))
+    # Only load officers marked as current
+    current_officers = officers.select().where(officers.current == True).order_by(officers.order.asc())
+    return render_template('officers.html', officers=list(current_officers))
 
 @app.route('/officers/past')
 def past_officers_page():
