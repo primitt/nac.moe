@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Picks | Northwood Anime Club{% endblock %}
+{% block description %}Monthly anime picks and reviews from Northwood Anime Club.{% endblock %}
+{% block content %}
+<h1 class="page-title">Monthly Picks</h1>
+<p class="page-intro">Each month, our club selects an anime worth watching and shares a scored review.</p>
+{% if reviews %}
+<div class="content-grid">
+    {% for review in reviews %}
+    <article class="content-card content-card-body">
+        <div class="eyebrow">{{ review.date.strftime('%B %Y') }}</div>
+        <h2>{{ review.anime }}</h2>
+        <p class="text-lg font-bold">{{ review.title }}</p>
+        <div class="score">{{ review.score }}/10</div>
+        <p>{{ review.content }}</p>
+        <p>Reviewed by {{ review.author }}</p>
+        {% if review.url %}<a class="text-link" href="{{ review.url }}" target="_blank" rel="noopener noreferrer">View anime details</a>{% endif %}
+    </article>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state"><h2>No monthly picks published yet</h2><p>Our first review is still in the editing room.</p></div>
+{% endif %}
+{% endblock %}

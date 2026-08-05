@@ -1,177 +1,147 @@
-from flask import Flask, render_template, send_from_directory, redirect, request
-from datetime import datetime, timedelta
+from collections import OrderedDict
+from datetime import datetime
 import json
 import os
-from db.db import database, events, news, settings, officers
 
-# TODO: Create a monthly anime recommendations page
-    # TODO: Bot Commands
-    # TODO: Create page for reviews
-# TODO: BUG FIXES
-    # TODO: BUG - index.html - fix no meeting date spacing on mobile
-# TODO: Officers Page - Create re-ordering system
-# TODO: Add contact information and proper, nice footer
-# TODO: About Page
-# TODO: Change the color of the registration button (?? header has been changed, maybe this isnt needed)
-# TODO: CLEAN UP CODE AND PAGES
-# TODO: CREATE Past Officer Page
+from flask import Flask, redirect, render_template, request, send_from_directory
 
-# DEPRECATED
-# def next_first_or_third_tuesday(start_date=None):
-#     if not start_date:
-#         start_date = datetime.now()
-#     else:
-#         start_date = datetime.strptime(start_date, '%Y-%m-%d')
-    
-#     first_day_of_next_month = (start_date.replace(day=1) + timedelta(days=31)).replace(day=1)
-#     first_day_of_current_month = start_date.replace(day=1)
-#     tuesday_count = 0
-    
-#     for day in range(31):
-#         current_date = first_day_of_current_month + timedelta(days=day)
-#         if current_date.weekday() == 1:
-#             tuesday_count += 1
-#             if tuesday_count in [1, 3] and current_date >= start_date and current_date.strftime('%Y-%m-%d') not in skip_meeting:
-#                 return current_date
-#     tuesday_count = 0
-#     for day in range(31): 
-#         current_date = first_day_of_next_month + timedelta(days=day)
-#         if current_date.weekday() == 1:
-#             tuesday_count += 1
-#             if tuesday_count in [1, 3]:
-#                 return current_date
+from db.db import events, news, officers, reviews, settings
 
 
 registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3go34lME8UWC0dMvBVzSx0HfaVezoRfwA/viewform?usp=dialog"
 app = Flask(__name__)
 
 DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
-SHORT_JSON_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'short.json')
+SHORT_JSON_PATH = os.path.join(app.root_path, 'short.json')
+
+for setting_name in DEFAULTS:
+    settings.get_or_create(name=setting_name, defaults={'value': 'TBD'})
+
 
 def is_valid_short_name(name):
-    """Validate short link name to prevent directory traversal and injection attacks."""
-    if not name:
-        return False
-    # Check for path separators (both Unix and Windows)
-    if os.path.sep in name or '/' in name or '\\' in name:
-        return False
-    if name.startswith('.'):
-        return False
-    if '..' in name:
-        return False
-    if '\x00' in name:  # Null byte injection
-        return False
-    return True
+    """Reject short-link names that could be interpreted as paths."""
+    return bool(name and '/' not in name and '\\' not in name and
+                not name.startswith('.') and '..' not in name and '\x00' not in name)
 
-# Security headers
+
 @app.after_request
 def set_security_headers(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    # Only set HSTS when using HTTPS
     if request.is_secure:
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     return response
+
 
 @app.route('/reg')
 def reg():
     return redirect(registration_form)
 
-@app.route('/', methods=['GET'])
+
+@app.route('/')
 def index():
-    meeting_date = events.select().where(events.type == 'Meeting', events.date > datetime.now().date()).order_by(events.date.asc()).limit(1)
-    if len(meeting_date) > 0:
-        meeting_date = meeting_date[0].date.strftime('%B %d, %Y')
-    else:
-        meeting_date = None
-    # get all the news from the database and sort it by date with the latest news first
+    next_meeting = (events.select()
+                    .where((events.type == 'Meeting') &
+                           (events.date >= datetime.now().date()))
+                    .order_by(events.date.asc())
+                    .first())
+    meeting_date = next_meeting.date.strftime('%B %d, %Y') if next_meeting else None
     all_news = news.select().order_by(news.date.desc()).limit(10)
-    # make an object with all the settings so i can do site_vars.default_dt and access the value
-    site_vars = {}
-    for setting in settings.select():
-        site_vars[setting.name] = setting.value
-    site_vars = type('obj', (object,), site_vars)
-    return render_template('index.html', meeting_date=meeting_date, all_news=list(all_news), site_vars=site_vars)
+    site_vars = type('SiteSettings', (), {
+        setting.name: setting.value for setting in settings.select()
+    })
+    return render_template('index.html', meeting_date=meeting_date,
+                           all_news=list(all_news), site_vars=site_vars)
+
+
 @app.route('/media/<path:path>')
 def media(path):
-    # send_from_directory validates that the resolved path is within the specified directory,
-    # providing built-in protection against directory traversal attacks
-    return send_from_directory('media', path)
+    return send_from_directory(os.path.join(app.root_path, 'media'), path)
+
+
 @app.route('/short/<name>')
 def short(name):
-    # Validate short link name to prevent security issues
     if not is_valid_short_name(name):
         return "Invalid short link", 400
-    
     try:
-        with open(SHORT_JSON_PATH, 'r') as f:
-            json_file = json.load(f)
-        if name.lower() in json_file:
-            return redirect(json_file[name.lower()]['url'])
-        return "Short link not found", 404
-    except IOError as e:
-        # Log error for debugging but don't expose details to user
-        app.logger.error(f"Error reading short.json: {e}")
+        with open(SHORT_JSON_PATH, 'r', encoding='utf-8') as short_file:
+            links = json.load(short_file)
+        link = links.get(name.lower())
+        return redirect(link['url']) if link else ("Short link not found", 404)
+    except OSError as error:
+        app.logger.error("Error reading short.json: %s", error)
         return "Error accessing short links", 500
-    except json.JSONDecodeError as e:
-        # Log error for debugging but don't expose details to user
-        app.logger.error(f"Error parsing short.json: {e}")
+    except json.JSONDecodeError as error:
+        app.logger.error("Error parsing short.json: %s", error)
         return "Error parsing short links", 500
+
+
 @app.route('/events')
-def event():
-    even = events.select()
-    parsed_events = {}
-    for event in even:
-        if event.date and event.date_end:
-            if event.date >= datetime.now().date() or event.date_end >= datetime.now().date():
-                get_month = event.date.strftime('%B')
-                event.date = event.date.strftime('%B %d, %Y')
-                event.date_end = event.date_end.strftime('%B %d, %Y')
-                if get_month not in parsed_events:
-                    parsed_events[get_month] = []
-                parsed_events[get_month].append(event)
-        elif event.date:
-             if event.date >= datetime.now().date():
-                get_month = event.date.strftime('%B')
-                event.date = event.date.strftime('%B %d, %Y')
-                if get_month not in parsed_events:
-                    parsed_events[get_month] = []
-                parsed_events[get_month].append(event)
-        else:
-            if 'No Date' not in parsed_events:
-                parsed_events['No Date'] = []
-            parsed_events['No Date'].append(event)
-    # sort the months in order putting No Date at the end
-    parsed_events = dict(sorted(parsed_events.items(), key=lambda x: datetime.strptime(x[0], '%B') if x[0] != 'No Date' else datetime.strptime('December', '%B')))
+def events_page():
+    today = datetime.now().date()
+    dated_events = []
+    undated_events = []
+    for event_item in events.select().order_by(events.date.asc()):
+        if event_item.date is None:
+            undated_events.append(event_item)
+        elif event_item.date >= today or (event_item.date_end and event_item.date_end >= today):
+            dated_events.append(event_item)
+
+    parsed_events = OrderedDict()
+    for event_item in dated_events:
+        parsed_events.setdefault(event_item.date.strftime('%B %Y'), []).append(event_item)
+    if undated_events:
+        parsed_events['No Date'] = undated_events
     return render_template('events.html', parsed_events=parsed_events)
+
+
 @app.route('/news')
 def news_page():
     all_news = news.select().order_by(news.date.desc())
     return render_template('news.html', all_news=list(all_news))
+
+
 @app.route('/officers')
 def officers_page():
-    # Only load officers marked as current
-    current_officers = officers.select().where(officers.current == True).order_by(officers.order.asc())
+    current_officers = (officers.select()
+                        .where(officers.current == True)
+                        .order_by(officers.order.asc(nulls='LAST'), officers.id.asc()))
     return render_template('officers.html', officers=list(current_officers))
+
 
 @app.route('/officers/past')
 def past_officers_page():
-    return render_template('past_officers.html', officers=list(officers.select()))
+    past_officers = (officers.select()
+                     .where(officers.current == False)
+                     .order_by(officers.year.desc(nulls='LAST'),
+                               officers.order.asc(nulls='LAST'), officers.id.asc()))
+    grouped_officers = OrderedDict()
+    for officer in past_officers:
+        grouped_officers.setdefault(officer.year or 'Unknown', []).append(officer)
+    return render_template('past_officers.html', grouped_officers=grouped_officers)
 
-@app.route("/resources")
-def resources():
-    return render_template("resources.html")
+
+@app.route('/recommendations')
+@app.route('/reviews')
+def monthly_picks_page():
+    entries = reviews.select().order_by(reviews.date.desc(), reviews.id.desc())
+    return render_template('reviews.html', reviews=list(entries))
+
+
+@app.route('/about')
+def about_page():
+    return render_template('about.html')
+
+
+@app.route('/resources')
+def resources_page():
+    return render_template('resources.html')
+
 
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found(_error):
     return render_template('404.html'), 404
 
-if __name__ == '__main__':
-    # create base settings if not exist: default_dt, default_loc, default_why, default_what
-    for setting in DEFAULTS:
-        if not settings.get_or_none(name=setting):
-            settings.create(name=setting, value="TBD")
 
-    # SECURITY: Debug mode should NEVER be enabled in production
-    # Set debug=False for production deployments
-    app.run(debug=True)
+if __name__ == '__main__':
+    app.run(debug=os.getenv('FLASK_DEBUG') == '1', port=5001)

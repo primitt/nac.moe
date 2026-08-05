@@ -1,17 +1,22 @@
-<!-- skeleton for header -->
 {% block header %}
-<script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-<div class="navbar bg-black bg-opacity-50 text-white">
-    <div class="flex-1">
-        <a class="btn btn-ghost normal-case text-xl odinbold" href="/">Home</a>
-    </div>
-    <div class="flex-none">
-        <ul class="menu menu-horizontal px-1 text-lg">
-            <li><a href="/events" class="odinregular">Events</a></li>
-            <li><a href="/news" class="odinregular">News</a></li>
-            <li><a href="/officers" class="odinregular">Staff</a></li>
-            <li><a href="/resources" class="odinregular">Resources</a></li>
+<nav class="navbar bg-black/70 text-white px-4 md:px-8 odinregular" aria-label="Primary navigation">
+    <div class="flex-1"><a class="btn btn-ghost text-xl odinbold" href="/">NAC</a></div>
+    <div class="hidden lg:flex">
+        <ul class="menu menu-horizontal text-base">
+            <li><a href="/about">About</a></li><li><a href="/events">Events</a></li>
+            <li><a href="/news">News</a></li><li><a href="/recommendations">Monthly Picks</a></li>
+            <li><a href="/officers">Staff</a></li>
+            <li><a href="/resources">Resources</a></li>
         </ul>
     </div>
-</div>
+    <details class="dropdown dropdown-end lg:hidden">
+        <summary class="btn btn-ghost" aria-label="Open navigation">Menu</summary>
+        <ul class="menu dropdown-content z-50 mt-3 w-52 rounded-box bg-black p-2 shadow">
+            <li><a href="/about">About</a></li><li><a href="/events">Events</a></li>
+            <li><a href="/news">News</a></li><li><a href="/recommendations">Monthly Picks</a></li>
+            <li><a href="/officers">Staff</a></li>
+            <li><a href="/resources">Resources</a></li>
+        </ul>
+    </details>
+</nav>
 {% endblock %}

@@ -1,7 +1,9 @@
-from peewee import *
-from playhouse.migrate import *
+import os
 
-database = SqliteDatabase('db/nac.sql')
+from peewee import *
+
+DATABASE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'nac.sql')
+database = SqliteDatabase(DATABASE_PATH)
 
 class UnknownField(object):
     def __init__(self, *_, **__): pass
@@ -59,20 +61,19 @@ class settings(BaseModel):
     class Meta:
         table_name = 'settings'
 
-    
-if not database.table_exists('events'):
-    database.create_tables([events])
-if not database.table_exists('news'):
-    database.create_tables([news])
-if not database.table_exists('settings'):
-    database.create_tables([settings])
-if not database.table_exists('officers'):
-    database.create_tables([officers])
+class reviews(BaseModel):
+    id = AutoField()
+    title = TextField()
+    anime = TextField()
+    score = IntegerField()
+    content = TextField()
+    author = TextField()
+    date = DateField()
+    url = TextField(null=True)
+    class Meta:
+        table_name = 'reviews'
 
-if __name__ == "__main__":
-    # migration
-    migrator = SqliteMigrator(database)
-    migrate(
-        migrator.add_column('officers', 'current', BooleanField(default=True)),
-        migrator.add_column('officers', 'year', IntegerField(null=True)),
-    )
+
+database.create_tables(
+    [events, news, settings, officers, reviews], safe=True
+)

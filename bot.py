@@ -1,9 +1,8 @@
-# TODO: Make discord bot with functions to add events ect
 from typing import Optional
 import nextcord
 from nextcord.ext import commands
 from dotenv import load_dotenv
-from db.db import database, events, news, settings, officers
+from db.db import events, news, officers, reviews, settings
 import datetime
 import os
 from AnilistPython import Anilist
@@ -256,7 +255,7 @@ async def edit_officer(
         officer.bio = bio
     if pfp:
         officer.pfp = pfp
-    if order:
+    if order is not None:
         officer.order = order
     if favorite_anime:
         try:
@@ -399,4 +398,71 @@ async def delete_officer(
         await interaction.response.send_message(f"Error: No officer found with ID `{officer_id}`.", ephemeral=True)
 
 
-bot.run(os.getenv("DISCORD_BOT_TOKEN"))
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def reorder_officers(
+    interaction: nextcord.Interaction,
+    officer_ids: str = nextcord.SlashOption(
+        name="officer_ids",
+        description="All current officer IDs in display order, separated by commas",
+        required=True
+    )
+):
+    try:
+        ordered_ids = [int(value.strip()) for value in officer_ids.split(",")]
+    except ValueError:
+        await interaction.response.send_message("Officer IDs must be comma-separated numbers.", ephemeral=True)
+        return
+
+    current_ids = {officer.id for officer in officers.select().where(officers.current == True)}
+    if len(ordered_ids) != len(set(ordered_ids)) or set(ordered_ids) != current_ids:
+        await interaction.response.send_message(
+            f"Provide every current officer ID exactly once. Current IDs: {', '.join(map(str, sorted(current_ids)))}",
+            ephemeral=True
+        )
+        return
+
+    with officers._meta.database.atomic():
+        for position, officer_id in enumerate(ordered_ids, start=1):
+            officers.update(order=position).where(officers.id == officer_id).execute()
+    await interaction.response.send_message("Officer display order updated.")
+
+
+# MONTHLY PICKS AND REVIEWS
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def create_review(
+    interaction: nextcord.Interaction,
+    title: str = nextcord.SlashOption(name="title", required=True),
+    anime: str = nextcord.SlashOption(name="anime", required=True),
+    score: int = nextcord.SlashOption(name="score", description="Score from 1 to 10", required=True),
+    content: str = nextcord.SlashOption(name="content", required=True),
+    url: Optional[str] = nextcord.SlashOption(name="url", required=False)
+):
+    if not 1 <= score <= 10:
+        await interaction.response.send_message("Score must be between 1 and 10.", ephemeral=True)
+        return
+    author = interaction.user.nick or interaction.user.name
+    entry = reviews.create(title=title, anime=anime, score=score, content=content,
+                           author=author, date=datetime.date.today(), url=url)
+    await interaction.response.send_message(f"Monthly pick `{entry.anime}` created with ID `{entry.id}`.")
+
+
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def all_reviews(interaction: nextcord.Interaction):
+    entries = reviews.select().order_by(reviews.date.desc())
+    lines = [f"(ID) {entry.id}. {entry.anime}: {entry.title} ({entry.score}/10) by {entry.author}"
+             for entry in entries]
+    await interaction.response.send_message("\n".join(lines) or "No reviews found.")
+
+
+@bot.slash_command(guild_ids=[1342913889544962090])
+async def delete_review(
+    interaction: nextcord.Interaction,
+    review_id: int = nextcord.SlashOption(name="id", required=True)
+):
+    deleted = reviews.delete().where(reviews.id == review_id).execute()
+    message = f"Review `{review_id}` deleted." if deleted else "Review not found."
+    await interaction.response.send_message(message, ephemeral=not bool(deleted))
+
+
+if __name__ == "__main__":
+    bot.run(os.getenv("DISCORD_BOT_TOKEN"))

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% block description %}Northwood High School Anime Club{% endblock %}">
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/media/site.css">
+    <title>{% block title %}Northwood Anime Club{% endblock %}</title>
+</head>
+<body class="site-shell">
+    {% include 'header.html' %}
+    <main class="site-main">{% block content %}{% endblock %}</main>
+    {% include 'footer.html' %}
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
