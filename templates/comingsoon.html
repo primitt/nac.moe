@@ -1,51 +1,14 @@
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-    }
-
-    .outer-div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: black;
-        color: white;
-        font-size: 25px;
-        font-family: monospace;
-        overflow: hidden;
-    }
-
-    .inner-div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .inner-div p {
-        margin: 5px;
-    }
-
-    .footer {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 30px;
-        background: black;
-        color: white;
-        text-align: center;
-        font-family: monospace;
-        line-height: 30px;
-    }
-</style>
-
-<body>
-    <div class="outer-div">
-        <div class="inner-div">
-            <p>Welcome to Northwood Anime Club</p>
-            <p>>_< This page is coming soon....</p>
+{% extends 'base.html' %}
+{% block title %}Monthly Picks | Northwood Anime Club{% endblock %}
+{% block description %}Northwood Anime Club monthly picks are coming soon.{% endblock %}
+{% block content %}
+<div class="coming-soon-shell">
+    <section class="coming-soon-card">
+        <div class="coming-soon-colors" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
         </div>
-    </div>
-    <div class="footer">Made with ❤️ by the Northwood High School Anime Club</div>
-</body>
+        <h1>Monthly Picks</h1>
+        <p>Coming Soon</p>
+    </section>
+</div>
+{% endblock %}

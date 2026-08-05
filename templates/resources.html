@@ -1,40 +1,52 @@
 {% extends 'base.html' %}
 {% block title %}Resources | Northwood Anime Club{% endblock %}
-{% block description %}Anime databases, cultural resources, local events, and stores recommended by Northwood Anime Club.{% endblock %}
+{% block description %}Anime databases, cultural resources, events, and local stores recommended by Northwood Anime Club.{% endblock %}
 {% block content %}
-<h1 class="page-title">Resources</h1>
-<p class="page-intro">Useful places to discover anime, learn about the medium, and find events or stores around Southern California.</p>
-<div class="content-grid">
-    <section class="content-card content-card-body">
-        <div class="eyebrow">Discover</div><h2>Anime Databases</h2>
-        <div class="resource-list">
-            <div class="resource-item"><a class="text-link" href="https://myanimelist.net/">MyAnimeList</a><p>Track anime and manga, browse community ratings, and read reviews.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://anilist.co/">AniList</a><p>A modern anime and manga database with tracking and social features.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://www.animenewsnetwork.com/encyclopedia/">Anime News Network Encyclopedia</a><p>Industry credits, news, reviews, and reference information.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://www.crunchyroll.com/">Crunchyroll</a><p>A major legal anime streaming platform with seasonal simulcasts.</p></div>
-        </div>
-    </section>
-    <section class="content-card content-card-body">
-        <div class="eyebrow">Learn</div><h2>Culture & History</h2>
-        <div class="resource-list">
-            <div class="resource-item"><a class="text-link" href="https://www.nippon.com/en/features/h00043/">The History of Anime</a><p>Nippon.com's introduction to anime's development and cultural impact.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://ipfs.io/ipfs/bafybeibgxitb63epksxpfo34embv2dfspqp2izz7dm6kghmwdxopforv7a">Anime: A History</a><p>Jonathan Clements' book-length history of the medium.</p></div>
-        </div>
-    </section>
-    <section class="content-card content-card-body">
-        <div class="eyebrow">Attend</div><h2>Local Events</h2>
-        <div class="resource-list">
-            <div class="resource-item"><a class="text-link" href="https://animeimpulse.com/">Anime Impulse</a><p>A two-day convention held in Los Angeles and Anaheim.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://anime-expo.org/">Anime Expo</a><p>A four-day anime convention held annually in Los Angeles.</p></div>
-        </div>
-    </section>
-    <section class="content-card content-card-body">
-        <div class="eyebrow">Shop</div><h2>Local Stores</h2>
-        <div class="resource-list">
-            <div class="resource-item"><a class="text-link" href="https://www.bookoffusa.com/bookoff-irvine/">BookOFF Irvine</a><p>Second-hand manga, anime merchandise, games, and collectibles.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://www.animestation.com/">Anime Station</a><p>Anime merchandise, manga, and collectibles.</p></div>
-            <div class="resource-item"><a class="text-link" href="https://www.honeynbutter.com/">Honey & Butter Macarons</a><p>A local macaron shop known for anime and game collaborations.</p></div>
-        </div>
-    </section>
+<div class="page-shell">
+    <header class="page-hero">
+        <h1 class="page-title lavender">Resources</h1>
+        <p class="page-intro">Places to discover anime, learn about the medium, and find events or stores around Southern California.</p>
+    </header>
+    <div class="card-grid">
+        <section class="design-card resource-card pastel-purple">
+            <div class="card-body">
+                <h2 class="card-title">Anime databases</h2>
+                <div class="resource-list">
+                    <div class="resource-item"><a href="https://myanimelist.net/" target="_blank" rel="noopener noreferrer">MyAnimeList</a><p>Track anime and manga, browse community ratings, and read reviews.</p></div>
+                    <div class="resource-item"><a href="https://anilist.co/" target="_blank" rel="noopener noreferrer">AniList</a><p>A modern anime and manga database with tracking and social features.</p></div>
+                    <div class="resource-item"><a href="https://www.animenewsnetwork.com/encyclopedia/" target="_blank" rel="noopener noreferrer">Anime News Network Encyclopedia</a><p>Industry credits, news, reviews, and reference information.</p></div>
+                    <div class="resource-item"><a href="https://www.crunchyroll.com/" target="_blank" rel="noopener noreferrer">Crunchyroll</a><p>A legal anime streaming platform with seasonal simulcasts.</p></div>
+                </div>
+            </div>
+        </section>
+        <section class="design-card resource-card magenta">
+            <div class="card-body">
+                <h2 class="card-title">Culture & history</h2>
+                <div class="resource-list">
+                    <div class="resource-item"><a href="https://www.nippon.com/en/features/h00043/" target="_blank" rel="noopener noreferrer">The History of Anime</a><p>Nippon.com's introduction to anime's development and cultural impact.</p></div>
+                    <div class="resource-item"><a href="https://ipfs.io/ipfs/bafybeibgxitb63epksxpfo34embv2dfspqp2izz7dm6kghmwdxopforv7a" target="_blank" rel="noopener noreferrer">Anime: A History</a><p>Jonathan Clements' book-length history of the medium.</p></div>
+                </div>
+            </div>
+        </section>
+        <section class="design-card resource-card amber">
+            <div class="card-body">
+                <h2 class="card-title">Local events</h2>
+                <div class="resource-list">
+                    <div class="resource-item"><a href="https://animeimpulse.com/" target="_blank" rel="noopener noreferrer">Anime Impulse</a><p>A two-day convention held in Los Angeles and Anaheim.</p></div>
+                    <div class="resource-item"><a href="https://anime-expo.org/" target="_blank" rel="noopener noreferrer">Anime Expo</a><p>A four-day anime convention held annually in Los Angeles.</p></div>
+                </div>
+            </div>
+        </section>
+        <section class="design-card resource-card azure">
+            <div class="card-body">
+                <h2 class="card-title">Local stores</h2>
+                <div class="resource-list">
+                    <div class="resource-item"><a href="https://www.bookoffusa.com/bookoff-irvine/" target="_blank" rel="noopener noreferrer">BookOFF Irvine</a><p>Second-hand manga, anime merchandise, games, and collectibles.</p></div>
+                    <div class="resource-item"><a href="https://www.animestation.com/" target="_blank" rel="noopener noreferrer">Anime Station</a><p>Anime merchandise, manga, and collectibles.</p></div>
+                    <div class="resource-item"><a href="https://www.honeynbutter.com/" target="_blank" rel="noopener noreferrer">Honey & Butter Macarons</a><p>A local macaron shop known for anime and game collaborations.</p></div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 {% endblock %}

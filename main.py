@@ -2,6 +2,7 @@ from collections import OrderedDict
 from datetime import datetime
 import json
 import os
+import random
 
 from flask import Flask, redirect, render_template, request, send_from_directory
 
@@ -12,6 +13,10 @@ registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3g
 app = Flask(__name__)
 
 DEFAULTS = ['default_dt', 'default_loc', 'default_why', 'default_what']
+OFFICER_CARD_COLORS = (
+    'pastel-purple', 'magenta', 'amber', 'azure', 'pastel-blue',
+    'paper', 'indigo', 'rose', 'teal'
+)
 SHORT_JSON_PATH = os.path.join(app.root_path, 'short.json')
 
 for setting_name in DEFAULTS:
@@ -22,6 +27,18 @@ def is_valid_short_name(name):
     """Reject short-link names that could be interpreted as paths."""
     return bool(name and '/' not in name and '\\' not in name and
                 not name.startswith('.') and '..' not in name and '\x00' not in name)
+
+
+def random_card_colors(count):
+    """Return shuffled card colors without repeats within each palette-sized batch."""
+    colors = []
+    while len(colors) < count:
+        palette = list(OFFICER_CARD_COLORS)
+        random.shuffle(palette)
+        if colors and palette[0] == colors[-1]:
+            palette[0], palette[1] = palette[1], palette[0]
+        colors.extend(palette)
+    return colors[:count]
 
 
 @app.after_request
@@ -106,7 +123,9 @@ def officers_page():
     current_officers = (officers.select()
                         .where(officers.current == True)
                         .order_by(officers.order.asc(nulls='LAST'), officers.id.asc()))
-    return render_template('officers.html', officers=list(current_officers))
+    current_officers = list(current_officers)
+    officer_cards = zip(current_officers, random_card_colors(len(current_officers)))
+    return render_template('officers.html', officer_cards=list(officer_cards))
 
 
 @app.route('/officers/past')
@@ -124,8 +143,7 @@ def past_officers_page():
 @app.route('/recommendations')
 @app.route('/reviews')
 def monthly_picks_page():
-    entries = reviews.select().order_by(reviews.date.desc(), reviews.id.desc())
-    return render_template('reviews.html', reviews=list(entries))
+    return render_template('comingsoon.html')
 
 
 @app.route('/about')

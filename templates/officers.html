@@ -1,42 +1,46 @@
 {% extends 'base.html' %}
-{% block title %}Staff | Northwood Anime Club{% endblock %}
+{% block title %}Officers | Northwood Anime Club{% endblock %}
 {% block description %}Meet the students who lead Northwood Anime Club.{% endblock %}
 {% block content %}
-<h1 class="page-title">Board & Staff</h1>
-<p class="page-intro">The students organizing meetings, managing outreach, and keeping the club running.</p>
-<p class="mb-8"><a class="text-link" href="/officers/past">View past staff</a></p>
-{% if officers %}
-<div class="content-grid">
-    {% for officer in officers %}
-    <article class="content-card content-card-body">
-        <img class="officer-photo" src="{{ officer.pfp }}" alt="{{ officer.name }}">
-        <div class="text-center">
-            <h2>{{ officer.name }}</h2>
-            <div class="eyebrow">{{ officer.position }}</div>
-            <p>{{ officer.bio }}</p>
-        </div>
-        {% if officer.favorite_anime_enabled %}
-        <div class="mt-6 border-t border-white/10 pt-5">
-            <div class="eyebrow mb-3">Favorite Anime</div>
-            <div class="flex gap-4 items-start">
-                {% if officer.favorite_anime_url_al %}<a href="{{ officer.favorite_anime_url_al }}" target="_blank" rel="noopener noreferrer">{% endif %}
-                <img class="anime-cover" src="{{ officer.favorite_anime_img }}" alt="Poster for {{ officer.favorite_anime_name }}">
-                {% if officer.favorite_anime_url_al %}</a>{% endif %}
+<div class="page-shell">
+    <header class="page-hero">
+        <h1 class="page-title">Current officers</h1>
+        <p class="page-intro">The students organizing events, managing outreach, and keeping Northwood Anime Club running smoothly.</p>
+        <a class="site-button" href="/officers/past">View past officers</a>
+    </header>
+    {% if officer_cards %}
+    <div class="card-grid">
+        {% for officer, card_color in officer_cards %}
+        <article class="design-card officer-card {{ card_color }}">
+            <div class="officer-main">
+                <img class="officer-photo" src="{{ officer.pfp }}" alt="{{ officer.name }}" width="152" height="152" loading="lazy" decoding="async">
+                <h2 class="officer-name">{{ officer.name }}</h2>
+                <p class="officer-role">{{ officer.position }}</p>
+                <p class="officer-bio">{{ officer.bio }}</p>
+            </div>
+            {% if officer.favorite_anime_enabled and officer.favorite_anime_name %}
+            <div class="favorite-anime">
+                {% if officer.favorite_anime_img %}
+                    {% if officer.favorite_anime_url_al %}<a href="{{ officer.favorite_anime_url_al }}" target="_blank" rel="noopener noreferrer">{% endif %}
+                    <img class="anime-cover" src="{{ officer.favorite_anime_img }}" alt="Poster for {{ officer.favorite_anime_name }}" width="135" height="190" loading="lazy" decoding="async">
+                    {% if officer.favorite_anime_url_al %}</a>{% endif %}
+                {% endif %}
                 <div>
-                    <h3 class="text-xl font-bold">{{ officer.favorite_anime_name }}</h3>
+                    <h3>{{ officer.favorite_anime_name }}</h3>
                     <p class="card-meta">{{ officer.favorite_anime_season }}{% if officer.favorite_anime_genre %} | {{ officer.favorite_anime_genre }}{% endif %}</p>
-                    <div class="card-actions">
-                        {% if officer.favorite_anime_score_al %}<span class="pill">AniList {{ officer.favorite_anime_score_al }}%</span>{% endif %}
-                        {% if officer.favorite_anime_score_mal %}<span class="pill">MAL {{ officer.favorite_anime_score_mal }}/10</span>{% endif %}
+                    {% if officer.favorite_anime_bio %}<p>{{ officer.favorite_anime_bio | striptags | truncate(240) }}</p>{% endif %}
+                    <div class="score-row">
+                        {% if officer.favorite_anime_score_al and officer.favorite_anime_score_al != 'N/A' %}<span class="score-chip">AniList {{ officer.favorite_anime_score_al }}%</span>{% endif %}
+                        {% if officer.favorite_anime_score_mal and officer.favorite_anime_score_mal != 'N/A' %}<span class="score-chip">MAL {{ officer.favorite_anime_score_mal }}/10</span>{% endif %}
                     </div>
                 </div>
             </div>
-        </div>
-        {% endif %}
-    </article>
-    {% endfor %}
+            {% endif %}
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><h2>No current officers</h2><p>The next board lineup will appear here when it is ready.</p></div>
+    {% endif %}
 </div>
-{% else %}
-<div class="empty-state"><h2>No current staff found</h2><p>Please check back later.</p></div>
-{% endif %}
 {% endblock %}

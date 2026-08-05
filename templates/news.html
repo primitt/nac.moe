@@ -2,20 +2,29 @@
 {% block title %}News | Northwood Anime Club{% endblock %}
 {% block description %}News and announcements from Northwood Anime Club.{% endblock %}
 {% block content %}
-<h1 class="page-title">Club News</h1>
-<p class="page-intro">Meeting updates, announcements, and everything happening around the club.</p>
-{% if all_news %}
-<div class="content-grid">
-    {% for article in all_news %}
-    <article class="content-card content-card-body">
-        <div class="eyebrow">{{ article.date.strftime('%B %d, %Y') }}</div>
-        <h2>{{ article.title }}</h2>
-        <p>{{ article.content }}</p>
-        <p class="card-meta">Posted by {{ article.author }}</p>
-    </article>
-    {% endfor %}
+<div class="page-shell">
+    <header class="page-hero">
+        <h1 class="page-title lavender">What's the news?</h1>
+        <p class="page-intro">Meeting updates, announcements, and everything happening around Northwood Anime Club.</p>
+    </header>
+    {% if all_news %}
+    <div class="news-list">
+        {% for article in all_news %}
+        <article class="design-card wide news-card {{ loop.cycle('paper', 'pastel-blue', 'magenta', 'amber', 'azure', 'pastel-purple', 'teal') }}">
+            <div class="news-date">
+                <strong>{{ article.date.strftime('%d') }}</strong>
+                <span>{{ article.date.strftime('%b %Y') }}</span>
+            </div>
+            <div class="card-body">
+                <h2 class="card-title">{{ article.title }}</h2>
+                <p class="card-copy">{{ article.content }}</p>
+                <p class="card-meta">Posted by {{ article.author }}</p>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><h2>No news yet</h2><p>Follow @nac.moe while our next announcement is in the works.</p></div>
+    {% endif %}
 </div>
-{% else %}
-<div class="empty-state"><h2>No news yet</h2><p>New announcements will appear here.</p></div>
-{% endif %}
 {% endblock %}

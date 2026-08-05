@@ -1,33 +1,48 @@
 {% extends 'base.html' %}
-{% block title %}Past Staff | Northwood Anime Club{% endblock %}
+{% block title %}Past Officers | Northwood Anime Club{% endblock %}
+{% block description %}Past student leaders of Northwood Anime Club.{% endblock %}
 {% block content %}
-<h1 class="page-title">Past Staff</h1>
-<p class="page-intro">The students who helped build and lead Northwood Anime Club.</p>
-{% if grouped_officers %}
-<label for="year-filter" class="block mb-2">School year</label>
-<select id="year-filter" class="select select-bordered mb-8 bg-white text-black">
-    <option value="">All years</option>
-    {% for year in grouped_officers %}<option value="{{ year }}">{{ year }}</option>{% endfor %}
-</select>
-{% for year, year_officers in grouped_officers.items() %}
-<section class="year-section mb-10" data-year="{{ year }}">
-    <h2 class="text-3xl font-bold mb-4">{{ year if year != 'Unknown' else 'Unknown Year' }}</h2>
-    <div class="content-grid">
-        {% for officer in year_officers %}
-        <article class="content-card content-card-body text-center">
-            <img class="mx-auto !h-32 !w-32 rounded-full" src="{{ officer.pfp }}" alt="{{ officer.name }}">
-            <h2>{{ officer.name }}</h2><p class="eyebrow">{{ officer.position }}</p><p>{{ officer.bio }}</p>
-        </article>
-        {% endfor %}
-    </div>
-</section>
-{% endfor %}
-{% else %}<div class="empty-state"><h2>No past staff found</h2></div>{% endif %}
+<div class="page-shell">
+    <header class="page-hero">
+        <h1 class="page-title lavender">Past officers</h1>
+        <p class="page-intro">The students who helped build and lead Northwood Anime Club through the years.</p>
+        <a class="site-button secondary" href="/officers">Current officers</a>
+    </header>
+    {% if grouped_officers %}
+    <label class="year-filter" for="year-filter">
+        School year
+        <select id="year-filter">
+            <option value="">All years</option>
+            {% for year in grouped_officers %}<option value="{{ year }}">{{ year }}</option>{% endfor %}
+        </select>
+    </label>
+    {% for year, year_officers in grouped_officers.items() %}
+    <section class="year-section" data-year="{{ year }}" aria-labelledby="year-{{ loop.index }}">
+        <h2 id="year-{{ loop.index }}" class="year-heading">{{ year if year != 'Unknown' else 'Unknown Year' }}</h2>
+        <div class="card-grid">
+            {% for officer in year_officers %}
+            <article class="design-card third {{ loop.cycle('pastel-purple', 'magenta', 'amber', 'azure', 'pastel-blue', 'rose', 'teal', 'indigo') }}">
+                <div class="officer-main">
+                    <img class="officer-photo" src="{{ officer.pfp }}" alt="{{ officer.name }}" width="152" height="152" loading="lazy" decoding="async">
+                    <h3 class="officer-name">{{ officer.name }}</h3>
+                    <p class="officer-role">{{ officer.position }}</p>
+                    <p class="officer-bio">{{ officer.bio }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+    {% endfor %}
+    {% else %}
+    <div class="empty-state"><h2>No past officers found</h2><p>The club archive is still being assembled.</p></div>
+    {% endif %}
+</div>
 <script>
-document.getElementById('year-filter')?.addEventListener('change', function () {
-    document.querySelectorAll('.year-section').forEach((section) => {
-        section.hidden = Boolean(this.value && section.dataset.year !== this.value);
+    const yearFilter = document.getElementById('year-filter');
+    yearFilter?.addEventListener('change', () => {
+        document.querySelectorAll('.year-section').forEach((section) => {
+            section.hidden = Boolean(yearFilter.value && section.dataset.year !== yearFilter.value);
+        });
     });
-});
 </script>
 {% endblock %}

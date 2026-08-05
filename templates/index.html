@@ -1,372 +1,103 @@
-<html data-theme="light">
-
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.min.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preload" href="./media/Odin-Bold.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="./media/TightSpotBB-BoldItalic.woff" as="font" type="font/woff" crossorigin>
-    <link rel="preload" href="./media/Odin-Bold.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="./media/TightSpotBB-BoldItalic.woff" as="font" type="font/woff" crossorigin>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name='og:title' content='Northwood High School Anime Club'>
-    <meta name='og:type' content='website'>
-    <meta name='og:url' content='https://nac.moe'>
-    <meta name='og:image' content='https://nac.moe/media/lovebulletjoinanimeclub.png'>
-    <meta name='og:site_name' content='NAC'>
-    <meta name='og:description' content='Northwood High School Anime Club'>
-    <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=stat_minus_3" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <title>Northwood High School Anime Club</title>
-</head>
-<style>
-    @font-face {
-        font-family: 'Odin Rounded';
-        src: url('./media/Odin-Bold.woff2') format('woff2');
-        font-weight: bold;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'TightSpot BB';
-        src: url('./media/TightSpotBB-BoldItalic.woff') format('woff');
-        font-weight: bold;
-        font-style: italic;
-    }
-
-    @font-face {
-        font-family: 'Odin Rounded';
-        src: url('./media/odin-rounded.regular.woff') format('woff');
-        font-weight: normal;
-        font-style: normal;
-    }
-
-    @font-face {
-        font-family: 'Odin Rounded';
-        src: url('./media/odin-rounded.light.woff') format('woff');
-        font-weight: lighter;
-        font-style: normal;
-    }
-
-    /* Black background layer */
-    body::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: black;
-        z-index: -2;
-    }
-
-    /* Background image overlay */
-    .background {
-        position: fixed;
-        top: -20px;
-        left: -20px;
-        width: 120%;
-        height: 120%;
-        opacity: 80%;
-        background: url("/media/background.png") no-repeat center center;
-        background-size: cover;
-        filter: blur(8px);
-        z-index: -1;
-    }
-
-    .odinbold {
-        font-family: 'Odin Rounded';
-        font-weight: bold;
-        font-style: normal;
-    }
-
-    .tightspotbolditalic {
-        font-family: 'TightSpot BB';
-        font-weight: bold;
-        font-style: italic;
-    }
-
-    .odinregular {
-        font-family: 'Odin Rounded';
-        font-weight: normal;
-        font-style: normal;
-    }
-
-    .odinlight {
-        font-family: 'Odin Rounded';
-        font-weight: lighter;
-        font-style: normal;
-    }
-
-    .animetext {
-        -webkit-text-stroke: 1px #000000;
-    }
-</style>
-
-<body>
-    <div class="background"></div>
-    <section class="h-screen flex flex-col">
-        <header>
-            {% include 'header.html' %}
-        </header>
-        <div class="flex items-center justify-center flex-grow">
-            <div class="text-center">
-                <p class="text-5xl font-bold mx-5">
-                    <span class="odinbold text-white"
-                        style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Welcome
-                        to</span>
-                </p>
-                <p class="text-5xl font-bold mx-5">
-                    <span class="tightspotbolditalic animetext text-8xl text-[#000080]"
-                        style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Northwood</span>
-                    <span class="tightspotbolditalic text-7xl md:text-8xl text-white animetext"
-                        style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Anime Club</span>
-                </p>
-                <div style="margin-top:20px;"></div>
-                {% if meeting_date %}
-                <div class="odinbold text-3xl text-white px-4"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Our
-                    next meeting will be on <span class="text-[#aeb4ff] whitespace-nowrap">{{meeting_date}}</span></div>
-                {% else %}
-                <span class="odinbold text-3xl text-white"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">Our next meeting has not been scheduled
-                    yet!</span>
-                {% endif %}
-                <div class="md:flex justify-center mt-7 odinregular gap-3">
-                    <div class="tooltip" data-tip="This will redirect you to Google Forms">
-                        <a href="/reg" class="btn bg-[#000080] border-[#000080] hover:bg-[#000060] text-xl text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                                fill="currentColor">
-                                <path
-                                    d="M200-246q54-53 125.5-83.5T480-360q83 0 154.5 30.5T760-246v-514H200v514Zm280-194q58 0 99-41t41-99q0-58-41-99t-99-41q-58 0-99 41t-41 99q0 58 41 99t99 41ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm69-80h422q-44-39-99.5-59.5T480-280q-56 0-112.5 20.5T269-200Zm211-320q-25 0-42.5-17.5T420-580q0-25 17.5-42.5T480-640q25 0 42.5 17.5T540-580q0 25-17.5 42.5T480-520Zm0 17Z" />
-                            </svg>
-                            Registration
-                        </a>
-                    </div>
-                    <div class="tooltip" data-tip="This will redirect you to Instagram">
-                        <a href="https://instagram.com/nac.moe"
-                            class="btn bg-[#C13597] btn-ghost hover:bg-[#C13586] text-xl text-black">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                class="bi bi-instagram" viewBox="0 0 16 16">
-                                <path
-                                    d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334" />
-                            </svg>
-                            Instagram
-                        </a>
-                    </div>
-                </div>
-            </div>
+{% extends 'base.html' %}
+{% block title %}Northwood High School Anime Club{% endblock %}
+{% block description %}Northwood High School Anime Club: meetings, events, recommendations, and a community for anime and manga fans in Irvine.{% endblock %}
+{% block main_class %}home-main{% endblock %}
+{% block content %}
+<section class="hero" aria-labelledby="home-title">
+    <div class="hero-content">
+        <p class="hero-welcome">Welcome to</p>
+        <h1 id="home-title" class="hero-title">
+            <span class="northwood">Northwood</span>
+            <span class="anime">Anime</span>
+            <span class="club">Club</span>
+        </h1>
+        {% if meeting_date %}
+        <p class="meeting-line">Our next meeting is on <strong>{{ meeting_date }}</strong></p>
+        {% else %}
+        <p class="meeting-line">Our next meeting has not been scheduled yet.</p>
+        {% endif %}
+        <div class="button-row">
+            <a class="site-button" href="/reg">Register for the club</a>
+            <a class="site-button secondary" href="https://instagram.com/nac.moe" target="_blank" rel="noopener noreferrer">Follow @nac.moe</a>
         </div>
-        <footer class="text-center text-white odinbold text-2xl mb-5"
-            style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-            <span class="mb-5">Scroll Down For More Info</span>
-            <br>
-            <span class="material-symbols-outlined text-xl">
-                stat_minus_3
-            </span>
-        </footer>
-    </section>
+        <a class="scroll-cue" href="#industry-guests">
+            Learn more
+            <svg class="scroll-arrow" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 4v15M6 13l6 6 6-6" />
+            </svg>
+        </a>
+    </div>
+</section>
 
-    <section class="h-screen flex flex-col justify-center items-center text-white">
-        <div class="w-11/12 max-w-4xl text-center">
-            <h2 class="odinbold text-4xl md:text-6xl mb-8" style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                Looking for Guest Speakers!
-            </h2>
-            <div class="bg-black bg-opacity-50 rounded-lg p-8 backdrop-blur-sm">
-                <p class="odinregular text-lg md:text-xl mb-6"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    Are you a professional or content creator working in/with the anime industry? We'd love to hear from
-                    you!
-                </p>
-                <p class="odinregular text-md md:text-lg mb-6"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    Our club is always eager to learn from industry professionals who can share their experiences and
-                    career journeys. Whether you work in content creation, animation, voice acting, manga translation,
-                    publishing, distribution, marketing, or any other aspect of the anime and manga industry, we want to
-                    hear your story!
-                </p>
-                <p class="odinregular text-md md:text-lg mb-6"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    We can accommodate for in-person (Irvine, CA, US) or online, whichever accommodates your schedule
-                    best. Share your
-                    passion, inspire the next generation of anime enthusiasts, and help our members understand the
-                    diverse career paths available in this incredible industry.
-                </p>
-                <div class="mt-8">
-                    <a href="mailto:priansh@nac.moe"
-                        class="btn bg-[#8400FF] hover:bg-[#7200DD] text-white text-xl px-8 py-3 odinbold"
-                        style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                            fill="currentColor" class="mr-2">
-                            <path
-                                d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T840-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z" />
-                        </svg>
-                        Email Us (priansh@nac.moe)
-                    </a>
-                </div>
-            </div>
-        </div>
-    </section>
+<aside id="industry-guests" class="speaker-strip">
+    <h2>Share your story with our club</h2>
+    <p>We welcome creators and professionals working in animation, voice acting, publishing, translation, marketing, and other parts of the anime and manga industry. Sessions can be in person in Irvine or online.</p>
+    <a class="site-button" href="mailto:priansh@nac.moe">Become a guest speaker</a>
+</aside>
 
-    <section
-        class="h-screen md:grid grid-cols-2 justify-center justify-items-center items-center place-items-center md:mx-5">
-        <div class="flex justify-center items-center">
-            <div class="w-8/12">
-                <img src="./media/csmwhatisanimeclub.png" />
-                <div class="text-white odinbold text-md md:text-lg text-center"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    Chainsaw Man by Fujimoto Tatsuki | Vol. 1, Ch. 2 | Typeset/Edit: Priansh
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col items-center justify-center bg-cover bg-center text-white">
-            <div class="w-11/12 max-w-xl text-center">
-                <p class="odinbold text-white text-3xl md:text-5xl mt-10 md:mt-0"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    {{site_vars.default_what}}
-                </p>
-            </div>
-        </div>
-    </section>
-    <section
-        class="h-screen md:grid grid-cols-2 justify-center justify-items-center items-center place-items-center mt-20 md:mt-0 md:mx-5">
-        <div class="order-2 flex justify-center items-center">
-            <div class="w-10/12">
-                <img src="./media/lovebulletwhereanimeclub.png" />
-                <div class="text-white odinbold text-md md:text-lg text-center"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    LOVE BULLET by inee | Vol. 1, Ch. 1 | Typeset/Edit: Priansh
-                </div>
-            </div>
-        </div>
-        <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white mt-5 md:mt-0">
-            <div class="w-11/12 max-w-xl text-center mx-auto">
-                <p class="odinbold text-white text-3xl md:text-5xl"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    Where: {{site_vars.default_loc}} <br>
-                    When: {{site_vars.default_dt}}
-                </p>
-            </div>
-        </div>
-    </section>
-    <section
-        class="h-screen md:grid grid-cols-2 justify-center justify-items-center items-center place-items-center md:mx-5">
-        <div class="flex justify-center items-center">
-            <div class="w-10/12">
-                <img src="./media/catlikeclassmatewhyshouldijoin.png" />
-                <div class="text-white odinbold text-md md:text-lg text-center"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    Learning to Love My Cat-like Classmate by Akinoko | Vol. 1, Ch. 6 | Typeset/Edit: Priansh
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col items-center justify-center bg-cover bg-center text-white">
-            <div class="w-12/12 max-w-xl text-center mx-auto">
-                <p class="odinbold text-white text-3xl md:text-5xl mt-10 md:mt-0"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    {{site_vars.default_why}}
-                </p>
-            </div>
-        </div>
-    </section>
-    <section id="news"
-        class="h-screen md:grid grid-cols-2 justify-center justify-items-center items-center place-items-center mt-20 md:mt-0 md:mx-5">
-        <div class="order-2 flex justify-center items-center mt-5 md:mt-0">
-            <div class="w-10/12">
-                <img src="./media/wanderspacenews.png" />
-                <div class="text-white odinbold text-md md:text-lg text-center"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    After School, We Wander in Space by Saitou Yuu | Vol. 1, Ch. 1 | Typeset/Edit: Priansh
-                </div>
-            </div>
-        </div>
-        <div class="order-1 flex flex-col items-center justify-center bg-cover bg-center text-white">
-            <div class="w-12/12 lg:mx-20">
-                <div class="card bg-base-100 h-auto min-h-[60svh] lg:min-w-[45svw] min-w-[90svw] mt-5 lg:mt-0">
-                    <div class="card-body">
-                        <h2 class="card-title text-black odinbold text-3xl">News (beta)</h2>
-                        <div class="divider mt-0 mb-2">
-                        </div>
-                        <div
-                            class="overflow-y-scroll h-[60svh] scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-                            {% if all_news|length == 0 %}
-                            <div class="text-center">
-                                <p class="odinregular text-2xl text-black">No news yet...</p>
-                            </div>
-                            {% endif %}
-                            {% for news in all_news %}
-                            <div class="mb-5">
-                                <p class="odinbold text-black text-xl">{{news.title}}</p>
-                                <p class="odinregular text-black">{{news.content | safe}}</p>
-                                <p class="text-sm text-black text-end">Posted on {{news.date.strftime('%B %d, %Y')}} by
-                                    {{news.author}}</p>
-                            </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- center a button saying view more news -->
-            <div class="col-span-2 flex justify-center mt-5 odinregular">
-                <a href="/news" class="btn bg-[#F4ACB7] btn-ghost hover:bg-[#D0929B] text-xl text-black">View More
-                    News<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
-                        fill="#000000">
-                        <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
-                    </svg></a>
-            </div>
-        </div>
-    </section>
-    <section class="h-screen flex flex-col">
-        <div class="flex justify-center items-center flex-grow">
-            <div class="flex flex-col items-center">
-                <img class="w-10/12" src="./media/lovebulletjoinanimeclub.png" />
-                <div class="text-white odinbold text-lg text-center"
-                    style="filter: drop-shadow(0px 5px 4px rgba(0, 0, 0, 0.5));">
-                    LOVE BULLET by inee | Vol. 1, Ch. 0 | Typeset/Edit: Priansh
-                </div>
-            </div>
-        </div>
-        {% include 'footer.html' %}
-    </section>
+<section id="what-we-are" class="story-section">
+    <figure class="story-art">
+        <img src="/media/csmwhatisanimeclub.png" alt="Manga panel asking what anime club is" width="706" height="998" loading="lazy" decoding="async">
+        <figcaption class="image-caption">Chainsaw Man by Fujimoto Tatsuki | Vol. 1, Ch. 2 | Typeset/Edit: Priansh</figcaption>
+    </figure>
+    <div class="story-copy">
+        <h2 class="display-title">What is Anime Club?</h2>
+        <p>{{ site_vars.default_what }}</p>
+    </div>
+</section>
 
-    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
-</body>
-<script>
-    $(function () {
-        var $bg = $(".background");
-        var bgEl = $bg[0];
-        var computed = window.getComputedStyle(bgEl);
-        var baseTop = parseFloat(computed.top) || 0;
-        var opacityStr = (computed.opacity || "").toString().trim();
-        var initialOpacity = parseFloat(opacityStr);
-        if (isNaN(initialOpacity)) initialOpacity = 1;
-        if (opacityStr.endsWith("%")) initialOpacity = initialOpacity / 100;
-        if (initialOpacity > 1) initialOpacity = initialOpacity / 100;
-        var minOpacity = Math.min(0.7, initialOpacity);
-        $bg.css("transition", "top 220ms linear, opacity 200ms linear");
+<section class="story-section reverse">
+    <div class="story-copy">
+        <h2 class="display-title puce">Where are we?</h2>
+        <p><strong>Where:</strong> {{ site_vars.default_loc }}<br><strong>When:</strong> {{ site_vars.default_dt }}</p>
+    </div>
+    <figure class="story-art">
+        <img src="/media/lovebulletwhereanimeclub.png" alt="Manga panel about where anime club meets" width="966" height="690" loading="lazy" decoding="async">
+        <figcaption class="image-caption align-right">LOVE BULLET by inee | Vol. 1, Ch. 1 | Typeset/Edit: Priansh</figcaption>
+    </figure>
+</section>
 
-        $(window).on("scroll resize", function () {
-            var topscroll = $(this).scrollTop() || 0;
-            var screenheight = $(window).height() || 1;
-            var targetTop = baseTop - (topscroll / 50);
-            var opacityCalc = 1 - (topscroll / screenheight);
-            var targetOpacity = Math.max(minOpacity, opacityCalc);
-            targetOpacity = Math.min(initialOpacity, targetOpacity);
-            var currentTop = parseFloat($bg.css("top")) || baseTop;
-            var currentOpacity = parseFloat($bg.css("opacity"));
-            if (isNaN(currentOpacity)) currentOpacity = initialOpacity;
+<section class="story-section">
+    <figure class="story-art">
+        <img src="/media/catlikeclassmatewhyshouldijoin.png" alt="Manga panel asking why students should join" width="954" height="852" loading="lazy" decoding="async">
+        <figcaption class="image-caption">Learning to Love My Cat-like Classmate by Akinoko | Vol. 1, Ch. 6 | Typeset/Edit: Priansh</figcaption>
+    </figure>
+    <div class="story-copy">
+        <h2 class="display-title lavender">Why you should join!</h2>
+        <p>{{ site_vars.default_why }}</p>
+        <a class="site-button" href="/events">Explore events</a>
+    </div>
+</section>
 
-            if (Math.abs(targetTop - currentTop) < 0.5 && Math.abs(targetOpacity - currentOpacity) < 0.01) {
-                return;
-            }
+<section class="story-section reverse">
+    <div class="story-copy">
+        <h2 class="display-title puce">What's the news?</h2>
+        <div class="home-news">
+            {% for article in all_news[:3] %}
+            <article class="home-news-item">
+                <h3>{{ article.title }}</h3>
+                <p>{{ article.content | striptags | truncate(180) }}</p>
+            </article>
+            {% else %}
+            <article class="home-news-item">
+                <h3>No announcements yet</h3>
+                <p>Follow @nac.moe for the latest club updates.</p>
+            </article>
+            {% endfor %}
+        </div>
+        <a class="site-button secondary" href="/news">Read all news</a>
+    </div>
+    <figure class="story-art">
+        <img src="/media/wanderspacenews.png" alt="Manga panel introducing club news" width="1358" height="671" loading="lazy" decoding="async">
+        <figcaption class="image-caption align-right">After School, We Wander in Space by Saitou Yuu | Vol. 1, Ch. 1 | Typeset/Edit: Priansh</figcaption>
+    </figure>
+</section>
 
-            $bg.css({
-                top: targetTop + "px",
-                opacity: targetOpacity
-            });
-        }).trigger("resize");
-    });
-</script>
-
-</html>
+<section id="join" class="join-section">
+    <img src="/media/lovebulletjoinanimeclub.png" alt="Manga panel inviting students to join anime club" width="973" height="856" loading="lazy" decoding="async">
+    <p class="image-caption">LOVE BULLET by inee | Vol. 1, Ch. 0 | Typeset/Edit: Priansh</p>
+    <div class="button-row">
+        <a class="site-button" href="/reg">Join Anime Club</a>
+    </div>
+</section>
+{% endblock %}
