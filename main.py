@@ -7,7 +7,7 @@ from flask import Flask, redirect, render_template, request, send_from_directory
 
 from db.db import events, news, officers, reviews, settings
 
-
+# for future: i don't care that these are hardcoded -- this is a single-use website that needs to be simple to deploy and maintain.
 registration_form = "https://docs.google.com/forms/d/e/1FAIpQLSfI6Opr3IL-Gvt7f3go34lME8UWC0dMvBVzSx0HfaVezoRfwA/viewform?usp=dialog"
 app = Flask(__name__)
 
